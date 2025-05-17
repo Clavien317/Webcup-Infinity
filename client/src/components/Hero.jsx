@@ -1,36 +1,116 @@
 /* eslint-disable no-unused-vars */
-import { ArrowRight, Sparkles } from "lucide-react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Flame, ArrowDown } from "lucide-react";
+import { Flame, ArrowRight, ArrowDown, Sparkles } from "lucide-react";
 import { BackgroundBeams } from "../ui/BackgroundBeams";
 
 const Hero = () => {
     const navigate = useNavigate();
     
     return (
-        <div className="relative h-screen w-ful flex flex-col items-center justify-center overflow-hidden">
-            <div className="w-full absolute inset-0 h-screen">
-            </div>
+        <div className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+            {/* Animated Background Gradient */}
+            <motion.div
+                className="absolute inset-0 bg-gradient-to-b from-base-300 via-base-100 to-base-300"
+                animate={{
+                    opacity: [0.5, 0.6, 0.5],
+                }}
+                transition={{
+                    duration: 5,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                }}
+            />
             
             <div className="relative z-10 text-center px-6 md:px-10 py-10 md:py-24 max-w-5xl mx-auto">
-                <motion.h1 
-                    className="text-5xl md:text-7xl font-bold mb-8 z-10 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-500"
+                {/* Floating Elements */}
+                <motion.div
+                    className="absolute -top-20 left-1/2 transform -translate-x-1/2 w-64 h-64 rounded-full bg-primary/20 blur-3xl"
+                    animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.3, 0.5, 0.3]
+                    }}
+                    transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+                
+                {/* Enhanced Title */}
+                <motion.div 
+                    className="relative mb-8"
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <span className="text-pink-500">TheEnd</span>.page
-                </motion.h1>
+                    <motion.h1 
+                        className="text-6xl md:text-8xl font-bold tracking-tight"
+                    >
+                        <motion.span 
+                            className="inline-block bg-clip-text text-primary"
+                            animate={{ 
+                                scale: [1, 1.05, 1],
+                            }}
+                            transition={{ 
+                                duration: 2, 
+                                repeat: Infinity,
+                                repeatType: "reverse" 
+                            }}
+                        >
+                            TheEnd
+                        </motion.span>
+                        <motion.span
+                            className="inline-block text-base-content/80"
+                            animate={{
+                                rotateY: [0, 10, 0],
+                            }}
+                            transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                                repeatType: "reverse"
+                            }}
+                        >
+                            .page
+                        </motion.span>
+                    </motion.h1>
+                    
+                    {/* Sparkle Effects */}
+                    <motion.div
+                        className="absolute -top-4 -right-4"
+                        animate={{
+                            rotate: 360,
+                            scale: [1, 1.2, 1]
+                        }}
+                        transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: "linear"
+                        }}
+                    >
+                        <Sparkles className="w-8 h-8 text-primary/50" />
+                    </motion.div>
+                </motion.div>
                 
+                {/* Enhanced Tagline */}
                 <motion.p 
-                    className="text-xl md:text-2xl mb-10 text-white/80 max-w-2xl mx-auto"
+                    className="text-xl md:text-3xl mb-6 max-w-2xl mx-auto font-medium text-base-content/80"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3, duration: 0.8 }}
                 >
-                    Create your unforgettable farewell page. Whether you're leaving a job, 
-                    ending a project, or closing a chapter in your life - make it memorable.
+                </motion.p>
+                
+                {/* Description with better contrast */}
+                <motion.p 
+                    className="text-lg md:text-xl mb-12 max-w-2xl mx-auto text-base-content/70 leading-relaxed"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5, duration: 0.8 }}
+                >
+                    Create your dramatic farewell page. Whether you're leaving a job, 
+                    ending a relationship, or closing a chapter in your life - 
+                    <span className="text-primary font-semibold"> make it burn</span>.
                 </motion.p>
                 
                 {/* Enhanced CTA Buttons */}
@@ -40,28 +120,48 @@ const Hero = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 0.8 }}
                 >
-                    <button 
+                    <motion.button 
                         onClick={() => navigate('/create')}
-                        className="btn relative px-8 py-4 overflow-hidden rounded-lg bg-pink-500"
+                        className="btn btn-primary btn-lg px-8 rounded-full shadow-lg shadow-primary/20"
+                        whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(236,72,153,0.4)" }}
+                        whileTap={{ scale: 0.98 }}
                     >
-                        <div className="absolute inset-0 w-3 bg-white transition-all duration-300 ease-out group-hover:w-full opacity-10"></div>
-                        <div className="relative flex items-center justify-center gap-2">
-                            <span>Create Your Page</span>
-                            <Sparkles className="h-4 w-4" />
-                        </div>
-                    </button>
-                    <button 
+                        <span className="font-bold">Create Your Page</span>
+                        <Flame className="h-5 w-5 animate-pulse ml-2" />
+                    </motion.button>
+                    
+                    <motion.button 
                         onClick={() => navigate('/examples')}
-                        className="btn relative px-8 py-4 rounded-lg"
+                        className="btn btn-ghost btn-lg text-base-content/70 group"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
                     >
-                        <div className="relative flex items-center justify-center gap-2">
-                            <span>See Examples</span>
-                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </div>
-                    </button>
+                        <span>See Examples</span>
+                        <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
+                    </motion.button>
                 </motion.div>
             </div>
-            <BackgroundBeams className="absolute top-0 left-0 w-full h-full z-0" />
+            
+            {/* Scroll Indicator */}
+            <motion.div 
+                className="absolute bottom-10 z-10 flex flex-col items-center"
+                initial={{ opacity: 0 }}
+                animate={{ 
+                    opacity: [0.5, 1, 0.5],
+                    y: [0, 10, 0]
+                }}
+                transition={{ 
+                    delay: 1.2,
+                    duration: 2, 
+                    repeat: Infinity,
+                    repeatType: "loop"
+                }}
+            >
+                <span className="text-primary text-sm mb-2 font-medium tracking-wider">Discover More</span>
+                <ArrowDown className="h-6 w-6 text-primary" />
+            </motion.div>
+            
+            <BackgroundBeams className="absolute top-0 left-0 w-full h-full z-0 opacity-50" />
         </div>
     );
 };
