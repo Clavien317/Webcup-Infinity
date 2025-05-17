@@ -1,17 +1,15 @@
 import React from 'react'
-import Message from './components/Message'
+import LandingPage from "./pages/LandingPage.jsx";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 function App() {
-  return (
-    <div>
-      <img src="/webcupimg.png" alt="" />
-      <h1>
-        Hello world, C'est l'équipe infinity
-      </h1>
-
-      <Message />
-    </div>
-  )
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<LandingPage/>}/>
+            </Routes>
+        </BrowserRouter>
+    )
 }
 
 export default App
