@@ -4,7 +4,10 @@ import { motion, useScroll, useTransform } from "motion/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTheme } from "../context/ThemeContext";
-import { useEntranceAnimation, useHoverAnimation } from "../hooks/useAnimations";
+import {
+  useEntranceAnimation,
+  useHoverAnimation,
+} from "../hooks/useAnimations";
 import { fadeInAnimationVariants } from "../lib/utils";
 
 // Components

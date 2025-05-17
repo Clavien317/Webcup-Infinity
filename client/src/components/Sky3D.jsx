@@ -272,18 +272,7 @@ export default function Sky3D() {
           <AbstractParticles count={80} />
           <AbstractLines count={20} />
 
-          {/* Élément flottant pour un effet de profondeur */}
-          <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-            <mesh position={[0, 0, -10]} scale={5}>
-              <sphereGeometry args={[1, 16, 16]} />
-              <meshStandardMaterial
-                color="#87CEEB"
-                transparent
-                opacity={0.1}
-                wireframe
-              />
-            </mesh>
-          </Float>
+          {/* Le globe flottant a été supprimé d'ici */}
         </Suspense>
 
         {/* Contrôles limités pour une meilleure expérience utilisateur */}

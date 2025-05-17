@@ -6,6 +6,7 @@ import CreatePage from "./pages/CreatePage";
 // Commentez cette ligne si HowItWorks est un composant et non une page
 // import HowItWorks from "./pages/HowItWorks";
 import ExamplesPage from "./pages/ExamplesPage";
+import { ThemeProvider } from "./context/ThemeContext"; // Importez ThemeProvider
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -32,16 +33,19 @@ export default function App() {
             : "opacity-100 transition-opacity duration-500"
         }
       >
-        <Router>
-          <Suspense fallback={<div>Chargement...</div>}>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/create" element={<CreatePage />} />
-              <Route path="/examples" element={<ExamplesPage />} />
-              {/* <Route path="/how-it-works" element={<HowItWorks />} /> */}
-            </Routes>
-          </Suspense>
-        </Router>
+        {/* Enveloppez votre Router avec ThemeProvider */}
+        <ThemeProvider>
+          <Router>
+            <Suspense fallback={<div>Chargement...</div>}>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/create" element={<CreatePage />} />
+                <Route path="/examples" element={<ExamplesPage />} />
+                {/* <Route path="/how-it-works" element={<HowItWorks />} /> */}
+              </Routes>
+            </Suspense>
+          </Router>
+        </ThemeProvider>
       </div>
     </>
   );
