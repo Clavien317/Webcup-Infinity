@@ -22,31 +22,6 @@ const Dashboard = () => {
     animation: "fade",
   });
 
-  useEffect(() => {
-    // Animation d'entrée avec GSAP
-    const tl = gsap.timeline();
-    tl.from(".dashboard-header", {
-      y: -50,
-      opacity: 0,
-      duration: 0.8,
-      ease: "power3.out",
-    }).from(
-      ".dashboard-content",
-      {
-        opacity: 0,
-        y: 20,
-        duration: 0.5,
-        stagger: 0.2,
-      },
-      "-=0.3"
-    );
-
-    return () => {
-      // Nettoyage des animations
-      tl.kill();
-    };
-  }, []);
-
   const handleEmotionSelect = (emotion) => {
     setSelectedEmotion(emotion);
 
