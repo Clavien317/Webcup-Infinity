@@ -1,9 +1,9 @@
-import Hero from "../components/Hero.jsx";
+import Message from "../components/Message.jsx";
 
 const LandingContent = () => {
     return (
-        <div className="h-screen flex flex-col items-center justify-center">
-            <Hero/>
+        <div className="flex flex-col items-center justify-center">
+            <Message/>
         </div>
     );
 }
