@@ -1,0 +1,57 @@
+/* Styles pour les éléments abstraits */
+.abstract-shape {
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+/* Animation de pulsation pour les éléments abstraits */
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+/* Animation de flottement */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Effet de parallaxe pour le fond */
+.parallax-bg {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Effet de verre pour les cartes */
+.glass-card {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+/* Effet de surbrillance au survol */
+.glow-on-hover:hover {
+  box-shadow: 0 0 15px rgba(66, 153, 225, 0.6);
+}
+
+/* Animation de l'avion en papier */
+.paper-plane-animation {
+  animation: float 6s ease-in-out infinite;
+}

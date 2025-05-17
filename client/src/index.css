@@ -9,8 +9,68 @@
     default: true;
     --color-primary: #f6339a;
     --color-secondary: #33f6d0;
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: night --default, winter;
 }
 
-* {
-    font-family: Poppins, "sans serif";
+.carreaux-bg {
+  background-image: linear-gradient(
+      transparent 23px,
+      rgba(128, 128, 128, 0.2) 24px,
+      transparent 24px
+    ),
+    linear-gradient(
+      90deg,
+      transparent 23px,
+      rgba(128, 128, 128, 0.2) 24px,
+      transparent 24px
+    );
+  background-size: 40px 40px;
+}
+
+@keyframes blob {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+  33% {
+    transform: translateY(-30px) scale(1.1);
+  }
+  66% {
+    transform: translateY(20px) scale(0.9);
+  }
+}
+.animate-blob {
+  animation: blob 8s infinite;
+}
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+.scroll-down-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.scroll-down-indicator .arrow {
+  transform: rotate(45deg);
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0) rotate(45deg);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(15px) rotate(45deg);
+    opacity: 1;
+  }
 }
