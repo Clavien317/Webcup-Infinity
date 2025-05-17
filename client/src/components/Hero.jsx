@@ -99,9 +99,6 @@ const Hero = () => {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3, duration: 0.8 }}
                 >
-                    <span className="text-primary font-bold italic leading-relaxed">
-                        "Because if it's the end, might as well make it unforgettable."
-                    </span>
                 </motion.p>
                 
                 {/* Description with better contrast */}
