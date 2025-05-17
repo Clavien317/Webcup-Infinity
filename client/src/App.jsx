@@ -1,24 +1,37 @@
-import React from "react";
-import LandingPage from "./pages/LandingPage.jsx";
-import CreatePage from "./pages/CreatePage.jsx";
-import ExamplesPage from "./pages/ExamplesPage.jsx";
-import AuthPage from "./pages/AuthPage.jsx";
-import HowItWorks from "./components/HowItWorks.jsx";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { ThemeProvider } from "./context/ThemeContext.jsx";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "./context/ThemeContext";
+import { AuthProvider } from "./context/AuthContext";
+import AuthPage from "./pages/AuthPage";
+import HomePage from "./pages/HomePage";
+import ProfilePage from "./pages/ProfilePage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/create" element={<CreatePage />} />
-          <Route path="/examples" element={<ExamplesPage />} />
-          <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/auth" element={<AuthPage />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/auth" element={<AuthPage />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

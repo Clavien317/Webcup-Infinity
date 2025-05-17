@@ -1,83 +1,58 @@
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
+import { useEffect } from "react";
+import { gsap } from "gsap";
 
 export const useEntranceAnimation = (selector, options = {}) => {
-  const defaults = {
-    y: 20,
-    opacity: 0,
-    duration: 0.8,
-    stagger: 0.1,
-    ease: "power2.out",
-    delay: 0,
-  };
-
-  const settings = { ...defaults, ...options };
+  const {
+    duration = 0.6,
+    stagger = 0.1,
+    y = 20,
+    delay = 0.2,
+    ease = "power2.out",
+  } = options;
 
   useEffect(() => {
     const elements = document.querySelectorAll(selector);
+
     if (elements.length === 0) return;
 
     gsap.fromTo(
       elements,
-      { y: settings.y, opacity: 0 },
       {
-        y: 0,
+        opacity: 0,
+        y,
+      },
+      {
         opacity: 1,
-        duration: settings.duration,
-        stagger: settings.stagger,
-        ease: settings.ease,
-        delay: settings.delay,
+        y: 0,
+        duration,
+        stagger,
+        delay,
+        ease,
       }
     );
 
     return () => {
       gsap.killTweensOf(elements);
     };
-  }, [selector]);
+  }, [selector, duration, stagger, y, delay, ease]);
 };
 
-export const useHoverAnimation = (ref, options = {}) => {
-  const defaults = {
-    scale: 1.05,
-    duration: 0.3,
-    ease: "power2.out",
-  };
-
-  const settings = { ...defaults, ...options };
+export const useFadeAnimation = (selector, options = {}) => {
+  const { duration = 0.5, delay = 0, ease = "power1.out" } = options;
 
   useEffect(() => {
-    if (!ref.current) return;
+    const elements = document.querySelectorAll(selector);
 
-    const element = ref.current;
+    if (elements.length === 0) return;
 
-    const onMouseEnter = () => {
-      gsap.to(element, {
-        scale: settings.scale,
-        duration: settings.duration,
-        ease: settings.ease,
-      });
-    };
-
-    const onMouseLeave = () => {
-      gsap.to(element, {
-        scale: 1,
-        duration: settings.duration,
-        ease: settings.ease,
-      });
-    };
-
-    element.addEventListener("mouseenter", onMouseEnter);
-    element.addEventListener("mouseleave", onMouseLeave);
+    gsap.fromTo(
+      elements,
+      { opacity: 0 },
+      { opacity: 1, duration, delay, ease }
+    );
 
     return () => {
-      element.removeEventListener("mouseenter", onMouseEnter);
-      element.removeEventListener("mouseleave", onMouseLeave);
-      gsap.killTweensOf(element);
+      gsap.killTweensOf(elements);
     };
-  }, [ref, settings]);
-};
-
-export default {
-  useEntranceAnimation,
-  useHoverAnimation,
+  }, [selector, duration, delay, ease]);
 };

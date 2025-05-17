@@ -4,57 +4,57 @@ import { useNavigate } from "react-router-dom";
 import { BackgroundBeams } from "../ui/BackgroundBeams";
 import { useTheme } from "../context/ThemeContext";
 import { useEntranceAnimation } from "../hooks/useAnimations";
+import { useAuth } from "../hooks/useAuth";
+import { useForm } from "../hooks/useForm";
 import { cn } from "../lib/utils";
 import { Sparkles, User, Mail, Lock, ArrowRight } from "lucide-react";
-import axios from "axios";
 
 const AuthPage = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({
+  const { login, register, loading: authLoading, error: authError } = useAuth();
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Use the custom animation hook
+  useEntranceAnimation(".animate-item");
+
+  // Use the form hook
+  const { values, handleChange, resetForm } = useForm({
     nom: "",
     email: "",
     mot_de_passe: "",
     confirmPassword: "",
   });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-
-  // Use the custom animation hook
-  useEntranceAnimation(".animate-item");
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   const toggleAuthMode = () => {
     setIsLogin(!isLogin);
     setError("");
     setSuccess("");
+    resetForm();
   };
 
   const validateForm = () => {
+    setError("");
+
     if (isLogin) {
-      if (!formData.email || !formData.mot_de_passe) {
+      if (!values.email || !values.mot_de_passe) {
         setError("Please fill in all fields");
         return false;
       }
     } else {
-      if (!formData.nom || !formData.email || !formData.mot_de_passe) {
+      if (!values.nom || !values.email || !values.mot_de_passe) {
         setError("Please fill in all fields");
         return false;
       }
-      if (formData.mot_de_passe !== formData.confirmPassword) {
+      if (values.mot_de_passe !== values.confirmPassword) {
         setError("Passwords do not match");
         return false;
       }
-      if (formData.mot_de_passe.length < 6) {
+      if (values.mot_de_passe.length < 6) {
         setError("Password must be at least 6 characters");
         return false;
       }
@@ -72,31 +72,36 @@ const AuthPage = () => {
     setLoading(true);
     try {
       if (isLogin) {
-        // Login request
-        const response = await axios.post("/api/users/login", {
-          email: formData.email,
-          mot_de_passe: formData.mot_de_passe,
-        });
+        // Login request using our auth hook
+        const result = await login(values.email, values.mot_de_passe);
 
-        // Store token in localStorage
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.utilisateur));
-
-        setSuccess("Login successful!");
-        setTimeout(() => navigate("/"), 1500);
+        if (result.success) {
+          setSuccess("Login successful!");
+          setTimeout(() => navigate("/"), 1500);
+        } else {
+          setError(result.error || "Login failed");
+        }
       } else {
-        // Register request
-        await axios.post("/api/users/register", {
-          nom: formData.nom,
-          email: formData.email,
-          mot_de_passe: formData.mot_de_passe,
-        });
+        // Register request using our auth hook
+        const result = await register(
+          values.nom,
+          values.email,
+          values.mot_de_passe
+        );
 
-        setSuccess("Registration successful! Please log in.");
-        setTimeout(() => setIsLogin(true), 1500);
+        if (result.success) {
+          setSuccess("Registration successful! Please log in.");
+          setTimeout(() => {
+            setIsLogin(true);
+            resetForm();
+          }, 1500);
+        } else {
+          setError(result.error || "Registration failed");
+        }
       }
     } catch (err) {
-      setError(err.response?.data?.message || "An error occurred");
+      setError("An unexpected error occurred");
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -228,7 +233,7 @@ const AuthPage = () => {
                     type="text"
                     id="nom"
                     name="nom"
-                    value={formData.nom}
+                    value={values.nom}
                     onChange={handleChange}
                     className={cn(
                       "block w-full pl-10 pr-3 py-2 rounded-lg border focus:ring-2 focus:outline-none transition-colors",
@@ -266,7 +271,7 @@ const AuthPage = () => {
                   type="email"
                   id="email"
                   name="email"
-                  value={formData.email}
+                  value={values.email}
                   onChange={handleChange}
                   className={cn(
                     "block w-full pl-10 pr-3 py-2 rounded-lg border focus:ring-2 focus:outline-none transition-colors",
@@ -303,7 +308,7 @@ const AuthPage = () => {
                   type="password"
                   id="mot_de_passe"
                   name="mot_de_passe"
-                  value={formData.mot_de_passe}
+                  value={values.mot_de_passe}
                   onChange={handleChange}
                   className={cn(
                     "block w-full pl-10 pr-3 py-2 rounded-lg border focus:ring-2 focus:outline-none transition-colors",
@@ -341,7 +346,7 @@ const AuthPage = () => {
                     type="password"
                     id="confirmPassword"
                     name="confirmPassword"
-                    value={formData.confirmPassword}
+                    value={values.confirmPassword}
                     onChange={handleChange}
                     className={cn(
                       "block w-full pl-10 pr-3 py-2 rounded-lg border focus:ring-2 focus:outline-none transition-colors",
