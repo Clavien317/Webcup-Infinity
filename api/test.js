@@ -16,7 +16,7 @@ Réponse (au format JSON, sans texte autour) :
 // Formater le prompt avec une valeur
 
 const chat = new ChatMistralAI({
-  model: "open-mistral-7b",
+  model: "mistral-large-latest", // "open-mistral-7b",
   temperature: 0,
   apiKey: process.env.MISTRAL_AI_API_KEY,
 });
