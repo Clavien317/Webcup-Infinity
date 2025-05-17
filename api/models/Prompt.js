@@ -17,12 +17,10 @@ const Prompt = sequelize.define('Prompt', {
     },
     message: {
         type: DataTypes.STRING,
-        unique: true,
         allowNull: false
     },
     nouveaudepart: {
         type: DataTypes.STRING,
-        unique: true,
         allowNull: false
     },
     idUser: {
