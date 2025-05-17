@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, Send, ThumbsUp, Flag, Clock } from "lucide-react";
+import { User, Send, ThumbsUp, ThumbsDown, Flag, Clock } from "lucide-react";
 import { motion } from "motion/react";
 
 export default function CommentSection({ pageId }) {
