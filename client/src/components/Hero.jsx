@@ -10,8 +10,6 @@ import { useHoverAnimation } from "../hooks/useAnimations";
 import Sky3D from "./Sky3D"; // Importation du composant Sky3D
 
 const Hero = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="relative h-screen w-ful flex flex-col items-center justify-center overflow-hidden">
       <div className="w-full absolute inset-0 h-screen"></div>
