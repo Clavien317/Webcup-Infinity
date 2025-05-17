@@ -10,7 +10,7 @@ const ReponsePrompt = sequelize.define('ReponsePrompt', {
         autoIncrement: true
     },
     reponse: {
-        type: DataTypes.STRING(500),
+        type: DataTypes.JSON,
         allowNull: false
     },
     idPrompt: {

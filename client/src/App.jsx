@@ -1,39 +1,52 @@
+import React, { useState, useEffect, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "./context/ThemeContext";
-import { AuthProvider } from "./context/AuthContext";
-import AuthPage from "./pages/AuthPage";
-import HomePage from "./pages/HomePage";
-import ProfilePage from "./pages/ProfilePage";
-import ProtectedRoute from "./components/ProtectedRoute";
+import LandingPage from "./pages/LandingPage";
+import LoadingScreen from "./components/LoadingScreen";
+import CreatePage from "./pages/CreatePage";
+// Commentez cette ligne si HowItWorks est un composant et non une page
+// import HowItWorks from "./pages/HowItWorks";
+import ExamplesPage from "./pages/ExamplesPage";
+import { ThemeProvider } from "./context/ThemeContext"; // Importez ThemeProvider
 
-function App() {
+export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Préchargement des ressources importantes
+    const preloadResources = async () => {
+      // Simuler un temps de chargement minimum pour une meilleure UX
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setIsLoading(false);
+    };
+
+    preloadResources();
+  }, []);
+
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <Router>
-          <Routes>
-            <Route path="/auth" element={<AuthPage />} />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <HomePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </Router>
-      </AuthProvider>
-    </ThemeProvider>
+    <>
+      {/* <LoadingScreen onLoadingComplete={() => setIsLoading(false)} /> */}
+
+      <div
+        className={
+          isLoading
+            ? "opacity-0"
+            : "opacity-100 transition-opacity duration-500"
+        }
+      >
+        {/* Enveloppez votre Router avec ThemeProvider */}
+        <ThemeProvider>
+          <Router>
+            <Suspense fallback={<div>Chargement...</div>}>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/create" element={<CreatePage />} />
+                <Route path="/examples" element={<ExamplesPage />} />
+                {/* <Route path="/how-it-works" element={<HowItWorks />} /> */}
+              </Routes>
+            </Suspense>
+          </Router>
+        </ThemeProvider>
+      </div>
+    </>
   );
 }
-
-export default App;

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import { motion } from "motion/react";
-import { Clock, AlertTriangle, Check, X, ChevronRight, ChevronLeft, Share2, Eye } from "lucide-react";
+import { Clock, AlertTriangle, Check, X, ChevronRight, ChevronLeft, Share2, Eye, CheckCircle } from "lucide-react";
 
 const emotions = [
     { name: "Nostalgic", emoji: "🥺", color: "text-amber-500" },
@@ -19,33 +19,38 @@ const emotions = [
 ];
 
 const toneOptions = [
-    { value: "dramatic", label: "Dramatic" },
-    { value: "ironic", label: "Ironic" },
-    { value: "ultra-cringe", label: "Ultra Cringe" },
-    { value: "classy", label: "Classy" },
-    { value: "touching", label: "Touching" },
-    { value: "absurd", label: "Absurd" },
-    { value: "passive-aggressive", label: "Passive-Aggressive" },
-    { value: "honest", label: "Honest" }
+    { value: "dramatic", label: "Dramatic", icon: "🎭", description: "Intense and theatrical moments" },
+    { value: "ironic", label: "Ironic", icon: "😏", description: "With a touch of sarcasm" },
+    { value: "ultra-cringe", label: "Ultra Cringe", icon: "😬", description: "Deliberately over-the-top" },
+    { value: "classy", label: "Classy", icon: "✨", description: "Elegant and sophisticated" },
+    { value: "touching", label: "Touching", icon: "💝", description: "Heart-warming and moving" },
+    { value: "absurd", label: "Absurd", icon: "🤪", description: "Quirky and unexpected" },
+    { value: "passive-aggressive", label: "Passive-Aggressive", icon: "🙃", description: "Subtly pointed" },
+    { value: "honest", label: "Honest", icon: "💫", description: "Straightforward and genuine" }
 ];
 
 // Step definitions with validation rules
 const steps = [
-    { 
-        id: 1, 
+    {
+        id: 1,
+        name: "Emotion",
         isValid: (formData, selectedEmotion) => selectedEmotion !== null
     },
-    { 
-        id: 2, 
-        isValid: (formData) => formData.message.length > 0
+    {
+        id: 2,
+        name: "Situation",
+        isValid: (formData) => formData.scenario !== ""
     },
-    { 
-        id: 3, 
-        isValid: () => true
+    {
+        id: 3,
+        name: "Details",
+        isValid: () => true,
+        optional: true
     },
-    { 
-        id: 4, 
-        isValid: () => true
+    {
+        id: 4,
+        name: "Set Tone",
+        isValid: (formData) => formData.tone !== ""
     }
 ];
 
@@ -55,7 +60,10 @@ export default function CreatePage() {
     const [formData, setFormData] = useState({
         title: "My Farewell Page",
         tone: "",
+        scenario: "",
         message: "",
+        images: [],
+        backgroundMusic: null,
         includeGifs: false,
         includeSounds: false,
         includeAnimations: false
@@ -68,7 +76,7 @@ export default function CreatePage() {
         const timer = setInterval(() => {
             setTimeLeft(prev => Math.max(0, prev - 1));
         }, 60000); // Update every minute
-        
+
         return () => clearInterval(timer);
     }, []);
 
@@ -78,7 +86,7 @@ export default function CreatePage() {
             ...formData,
             [name]: type === "checkbox" ? checked : value
         });
-        
+
         // Clear error when field is edited
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: null }));
@@ -88,7 +96,7 @@ export default function CreatePage() {
     const validateStep = () => {
         const currentStepDef = steps.find(s => s.id === step);
         if (!currentStepDef) return true;
-        
+
         return currentStepDef.isValid(formData, selectedEmotion);
     };
 
@@ -104,7 +112,7 @@ export default function CreatePage() {
                 return;
             }
         }
-        
+
         setErrors({});
         setStep(step + 1);
     };
@@ -143,29 +151,22 @@ export default function CreatePage() {
                     <h1 className="text-4xl font-bold text-center mb-6">
                         Create Your <span className="text-primary">TheEnd</span> Page
                     </h1>
-                    
-                    {/* Time remaining indicator */}
-                    <div className="flex justify-center items-center mb-6 text-primary">
-                        <Clock className="w-5 h-5 mr-2" />
-                        <span className="font-mono">{formatTimeLeft()} remaining</span>
-                    </div>
 
                     <div className="max-w-3xl mx-auto">
                         {/* Enhanced interactive stepper */}
                         <div className="mb-10">
                             <ul className="steps steps-horizontal w-full">
                                 {steps.map((s) => (
-                                    <li 
+                                    <li
                                         key={s.id}
                                         className={`step cursor-pointer ${step >= s.id ? "step-primary" : ""}`}
                                         onClick={() => goToStep(s.id)}
                                         data-content={step > s.id ? "✓" : s.id}
                                     >
-                                        <div className="flex flex-col items-center mt-2">
-                                            <span>{s.icon}</span>
-                                            <span>{s.name}</span>
-                                            {step === s.id && (
-                                                <span className="text-xs text-primary mt-1">{s.description}</span>
+                                        <div className="flex items-center gap-1">
+                                            {s.name}
+                                            {s.optional && (
+                                                <span className="text-xs text-base-content/50">(optional)</span>
                                             )}
                                         </div>
                                     </li>
@@ -179,57 +180,57 @@ export default function CreatePage() {
                                 {step === 1 && (
                                     <div>
                                         <h2 className="card-title text-2xl mb-8 justify-center">How do you feel?</h2>
-                                        
+
                                         {errors.emotion && (
                                             <div className="alert alert-error mb-4 flex items-center">
                                                 <AlertTriangle className="w-5 h-5" />
                                                 <span>{errors.emotion}</span>
                                             </div>
                                         )}
-                                        
+
                                         <div className="relative h-[400px] mb-8">
                                             {/* Grand emoji animé au centre */}
-                                            <motion.div 
+                                            <motion.div
                                                 className="text-[120px] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
                                                 initial={{ scale: 0.9, opacity: 0.8 }}
-                                                animate={{ 
+                                                animate={{
                                                     scale: selectedEmotion ? [0.9, 1.1, 1] : 1,
                                                     rotate: selectedEmotion ? [0, 5, -5, 0] : 0,
                                                     opacity: 1
                                                 }}
-                                                transition={{ 
-                                                    duration: 0.8, 
-                                                    repeat: 0, 
-                                                    ease: "easeInOut" 
+                                                transition={{
+                                                    duration: 0.8,
+                                                    repeat: 0,
+                                                    ease: "easeInOut"
                                                 }}
                                                 key={selectedEmotion ? selectedEmotion.name : "default"}
                                             >
                                                 {selectedEmotion ? selectedEmotion.emoji : "🤔"}
                                             </motion.div>
-                                            
+
                                             {/* Cercle décoratif autour de l'emoji */}
-                                            <motion.div 
+                                            <motion.div
                                                 className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[180px] h-[180px] rounded-full border-2 border-dashed border-primary opacity-50"
-                                                animate={{ 
+                                                animate={{
                                                     rotate: 360,
                                                     scale: [1, 1.05, 1]
                                                 }}
-                                                transition={{ 
+                                                transition={{
                                                     rotate: { duration: 20, repeat: Infinity, ease: "linear" },
                                                     scale: { duration: 3, repeat: Infinity, repeatType: "reverse" }
                                                 }}
                                             />
-                                            
+
                                             {/* Boutons d'émotions disposés en cercle régulier autour de l'emoji */}
                                             {emotions.map((emotion, index) => {
                                                 // Calculer la position en cercle autour de l'emoji central
                                                 const angle = (index / emotions.length) * Math.PI * 2;
                                                 const radius = 180; // Distance du centre
-                                                
+
                                                 // Calculer les positions x et y
                                                 const x = Math.cos(angle) * radius;
                                                 const y = Math.sin(angle) * radius;
-                                                
+
                                                 return (
                                                     <motion.button
                                                         key={index}
@@ -258,10 +259,10 @@ export default function CreatePage() {
                                                 );
                                             })}
                                         </div>
-                                        
+
                                         <div className="card-actions justify-center mt-6">
-                                            <button 
-                                                onClick={nextStep} 
+                                            <button
+                                                onClick={nextStep}
                                                 className="btn btn-primary gap-2"
                                                 disabled={!selectedEmotion}
                                             >
@@ -274,90 +275,84 @@ export default function CreatePage() {
                                 {/* Step 2: Content Creation */}
                                 {step === 2 && (
                                     <div>
-                                        <h2 className="card-title mb-6">Create Your Content</h2>
-                                        
-                                        {errors.message && (
-                                            <div className="alert alert-error mb-4 flex items-center">
-                                                <AlertTriangle className="w-5 h-5" />
-                                                <span>{errors.message}</span>
-                                            </div>
-                                        )}
-                                        
-                                        <div className="form-control mb-4">
-                                            <label className="label">
-                                                <span className="label-text">Your Message</span>
-                                                <span className="label-text-alt text-primary">
-                                                    {formData.message.length} / 500 characters
-                                                </span>
-                                            </label>
-                                            <textarea
-                                                name="message"
-                                                value={formData.message}
-                                                onChange={handleChange}
-                                                placeholder="Write your farewell message here..."
-                                                className="textarea textarea-bordered h-40"
-                                                maxLength={500}
-                                            ></textarea>
-                                            <label className="label">
-                                                <span className="label-text-alt">
-                                                    {selectedEmotion && (
-                                                        <span className="flex items-center gap-1">
-                                                            Writing in <span className="font-bold">{selectedEmotion.name}</span> tone {selectedEmotion.emoji}
-                                                        </span>
-                                                    )}
-                                                </span>
-                                            </label>
-                                        </div>
-                                        
-                                        <div className="divider">Add Extras</div>
-                                        
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                                            <div className="form-control">
-                                                <label className="label cursor-pointer justify-start gap-2">
-                                                    <input
-                                                        type="checkbox"
-                                                        name="includeGifs"
-                                                        checked={formData.includeGifs}
-                                                        onChange={handleChange}
-                                                        className="checkbox checkbox-primary"
-                                                    />
-                                                    <span className="label-text">Include GIFs</span>
-                                                </label>
-                                            </div>
-                                            <div className="form-control">
-                                                <label className="label cursor-pointer justify-start gap-2">
-                                                    <input
-                                                        type="checkbox"
-                                                        name="includeSounds"
-                                                        checked={formData.includeSounds}
-                                                        onChange={handleChange}
-                                                        className="checkbox checkbox-primary"
-                                                    />
-                                                    <span className="label-text">Include Sounds</span>
-                                                </label>
-                                            </div>
-                                            <div className="form-control">
-                                                <label className="label cursor-pointer justify-start gap-2">
-                                                    <input
-                                                        type="checkbox"
-                                                        name="includeAnimations"
-                                                        checked={formData.includeAnimations}
-                                                        onChange={handleChange}
-                                                        className="checkbox checkbox-primary"
-                                                    />
-                                                    <span className="label-text">Include Animations</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        
+                                        <h2 className="card-title text-2xl mb-8 justify-center">What's happened?</h2>
+
+                                        <ul className="list bg-base-100 rounded-box">
+                                            <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
+                                                Choose the type of farewell you want to share
+                                            </li>
+
+                                            {[
+                                                {
+                                                    id: 'heartbreak',
+                                                    title: 'Heartbreak & Relationships',
+                                                    icon: '💔',
+                                                    description: 'Saying goodbye to a relationship or romantic partner'
+                                                },
+                                                {
+                                                    id: 'family-friends',
+                                                    title: 'Friends & Family',
+                                                    icon: '👥',
+                                                    description: 'Farewell to loved ones, moving away from family or friends'
+                                                },
+                                                {
+                                                    id: 'career',
+                                                    title: 'Career & Work',
+                                                    icon: '💼',
+                                                    description: 'Leaving a job, project, or workplace you loved'
+                                                },
+                                                {
+                                                    id: 'life-chapter',
+                                                    title: 'Life Chapter',
+                                                    icon: '📖',
+                                                    description: 'Closing a significant chapter in your life'
+                                                },
+                                                {
+                                                    id: 'other',
+                                                    title: 'Something Else',
+                                                    icon: '✨',
+                                                    description: 'Create a custom farewell for another situation'
+                                                }
+                                            ].map((scenario) => (
+                                                <motion.li
+                                                    key={scenario.id}
+                                                    className={`list-row cursor-pointer hover:bg-base-200 transition-colors ${formData.scenario === scenario.id ? 'bg-primary/5' : ''
+                                                        }`}
+                                                    onClick={() => setFormData({
+                                                        ...formData,
+                                                        scenario: scenario.id
+                                                    })}
+                                                    whileHover={{ scale: 1.01 }}
+                                                    whileTap={{ scale: 0.99 }}
+                                                >
+                                                    <div className="flex items-center justify-center w-10 h-10 rounded-box bg-base-200">
+                                                        <span className="text-2xl">{scenario.icon}</span>
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-medium">{scenario.title}</div>
+                                                        <div className="text-xs opacity-60">{scenario.description}</div>
+                                                    </div>
+                                                    <button
+                                                        className={`btn btn-ghost btn-circle ${formData.scenario === scenario.id ? 'text-primary' : ''
+                                                            }`}
+                                                    >
+                                                        {formData.scenario === scenario.id ? (
+                                                            <CheckCircle className="w-5 h-5" />
+                                                        ) : (
+                                                            <ChevronRight className="w-5 h-5" />
+                                                        )}
+                                                    </button>
+                                                </motion.li>
+                                            ))}
+                                        </ul>
                                         <div className="card-actions justify-between mt-6">
                                             <button onClick={prevStep} className="btn btn-outline gap-2">
                                                 <ChevronLeft className="w-4 h-4" /> Back
                                             </button>
-                                            <button 
-                                                onClick={nextStep} 
+                                            <button
+                                                onClick={nextStep}
                                                 className="btn btn-primary gap-2"
-                                                disabled={!formData.message}
+                                                disabled={!formData.scenario}
                                             >
                                                 Next <ChevronRight className="w-4 h-4" />
                                             </button>
@@ -368,107 +363,213 @@ export default function CreatePage() {
                                 {/* Step 3: Preview */}
                                 {step === 3 && (
                                     <div>
-                                        <h2 className="card-title mb-6">Preview Your Page</h2>
-                                        
-                                        <div className="bg-base-200 p-6 rounded-lg mb-6 relative overflow-hidden">
-                                            {/* Preview header with emotion */}
-                                            <div className="flex items-center mb-4">
-                                                <span className="text-4xl mr-3">{selectedEmotion?.emoji}</span>
-                                                <h3 className="text-2xl font-bold">{formData.title}</h3>
+                                         <div className="flex flex-col items-center mb-8 text-center">
+                                            <h2 className="card-title text-2xl justify-center mb-2">Tell Your Story</h2>
+                                            <p className="text-base-content/70">This is your moment to express everything you need to say</p>
+                                        </div>
+
+                                        <div className="space-y-6">
+                                            <div className="form-control">
+                                                <label className="label">
+                                                    <span className="label-text font-medium">Title Your Farewell</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="title"
+                                                    value={formData.title}
+                                                    onChange={handleChange}
+                                                    placeholder="Give your farewell a meaningful title..."
+                                                    className="input input-bordered w-full focus:border-primary"
+                                                />
                                             </div>
-                                            
-                                            {/* Message content */}
-                                            <div className="mb-6 relative">
-                                                <p className="whitespace-pre-line mb-4 text-lg">
-                                                    {formData.message || "No message provided."}
-                                                </p>
-                                                
-                                                {/* Animation effect if enabled */}
-                                                {formData.includeAnimations && (
-                                                    <motion.div 
-                                                        className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent"
-                                                        animate={{ x: ['-100%', '100%'] }}
-                                                        transition={{ 
-                                                            repeat: Infinity, 
-                                                            duration: 2,
-                                                            ease: "linear"
-                                                        }}
-                                                    />
-                                                )}
-                                            </div>
-                                            
-                                            {/* Features indicators */}
-                                            <div className="flex flex-wrap gap-2 text-sm text-gray-500">
-                                                <div className="badge badge-outline">
-                                                    {selectedEmotion?.name || "Neutral"} Tone
+
+                                            <div className="form-control">
+                                                <label className="label">
+                                                    <span className="label-text font-medium">Your Story</span>
+                                                    <span className="label-text-alt">
+                                                        Express yourself freely
+                                                    </span>
+                                                </label>
+                                                <textarea
+                                                    name="message"
+                                                    value={formData.message}
+                                                    onChange={handleChange}
+                                                    placeholder="Share your story... What happened? How do you feel? What would you like to say?"
+                                                    className="textarea textarea-bordered h-40 focus:border-primary w-full mb-2"
+                                                    style={{ minHeight: "200px" }}
+                                                ></textarea>
+                                                <div className="flex flex-wrap gap-2 mt-2">
+                                                    {["💭 Thoughts", "💝 Feelings", "🌟 Wishes", "🙏 Gratitude", "✨ Hope"].map((tag) => (
+                                                        <button
+                                                            key={tag}
+                                                            className="btn btn-sm btn-outline hover:btn-primary"
+                                                            onClick={() => {
+                                                                const newMessage = formData.message + (formData.message ? "\n\n" : "") + `${tag}:\n`;
+                                                                setFormData({ ...formData, message: newMessage });
+                                                            }}
+                                                        >
+                                                            {tag}
+                                                        </button>
+                                                    ))}
                                                 </div>
-                                                {formData.includeGifs && (
-                                                    <div className="badge badge-primary">GIFs</div>
-                                                )}
-                                                {formData.includeSounds && (
-                                                    <div className="badge badge-primary">Sounds</div>
-                                                )}
-                                                {formData.includeAnimations && (
-                                                    <div className="badge badge-primary">Animations</div>
-                                                )}
+                                            </div>
+
+                                            <div className="divider">Add Memories</div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="form-control">
+                                                    <label className="label">
+                                                        <span className="label-text font-medium">Photos & Images</span>
+                                                        <span className="label-text-alt text-primary">Optional</span>
+                                                    </label>
+                                                    <div className="flex items-center gap-4">
+                                                        <input
+                                                            type="file"
+                                                            className="file-input file-input-bordered w-full"
+                                                            accept="image/*"
+                                                            multiple
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div className="form-control">
+                                                    <label className="label">
+                                                        <span className="label-text font-medium">Set the Mood</span>
+                                                        <span className="label-text-alt text-primary">Optional</span>
+                                                    </label>
+                                                    <input
+                                                        type="file"
+                                                        className="file-input file-input-bordered w-full"
+                                                        accept="audio/*"
+                                                    />
+                                                    <label className="label">
+                                                        <span className="label-text-alt">Add background music to enhance your story</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div className="divider">Enhance Your Story</div>
+
+                                            <div className="flex flex-wrap gap-4 justify-center">
+                                                <label className="label cursor-pointer gap-2 hover:bg-base-200 p-2 rounded-lg">
+                                                    <input type="checkbox" name="includeGifs" checked={formData.includeGifs} onChange={handleChange} className="checkbox checkbox-primary" />
+                                                    <span className="label-text">Include GIFs</span>
+                                                </label>
+                                                <label className="label cursor-pointer gap-2 hover:bg-base-200 p-2 rounded-lg">
+                                                    <input type="checkbox" name="includeSounds" checked={formData.includeSounds} onChange={handleChange} className="checkbox checkbox-primary" />
+                                                    <span className="label-text">Add Sound Effects</span>
+                                                </label>
+                                                <label className="label cursor-pointer gap-2 hover:bg-base-200 p-2 rounded-lg">
+                                                    <input type="checkbox" name="includeAnimations" checked={formData.includeAnimations} onChange={handleChange} className="checkbox checkbox-primary" />
+                                                    <span className="label-text">Enable Animations</span>
+                                                </label>
                                             </div>
                                         </div>
-                                        
-                                        <div className="alert alert-info mb-6">
-                                            <Eye className="w-5 h-5" />
-                                            <span>This is how your farewell page will appear to others. Make sure it conveys your message as intended.</span>
-                                        </div>
-                                        
+
                                         <div className="card-actions justify-between mt-6">
                                             <button onClick={prevStep} className="btn btn-outline gap-2">
                                                 <ChevronLeft className="w-4 h-4" /> Back
                                             </button>
-                                            <button onClick={handleSubmit} className="btn btn-primary gap-2">
-                                                Publish <ChevronRight className="w-4 h-4" />
-                                            </button>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => setStep(4)} className="btn btn-ghost gap-2">
+                                                    Skip <ChevronRight className="w-4 h-4" />
+                                                </button>
+                                                <button onClick={nextStep} className="btn btn-primary gap-2">
+                                                    Preview <Eye className="w-4 h-4" />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
 
-                                {/* Step 4: Published */}
+                                {/* Step 4: Set Tone */}
                                 {step === 4 && (
-                                    <div className="text-center">
-                                        <h2 className="card-title text-2xl mb-6 justify-center">Your Page is Published!</h2>
-                                        
-                                        <div className="mb-8">
-                                            <div className="alert alert-success mb-6 justify-center">
-                                                <Check className="w-6 h-6" />
-                                                <span>Your farewell page has been created successfully!</span>
-                                            </div>
-                                            
-                                            <div className="p-4 border border-primary rounded-lg mb-6">
-                                                <p className="mb-4 font-bold">Share your page with this unique URL:</p>
-                                                <div className="flex justify-center">
-                                                    <div className="join w-full max-w-md">
-                                                        <input 
-                                                            className="input input-bordered join-item w-full" 
-                                                            readOnly 
-                                                            value={`https://theend.page/${formData.title.toLowerCase().replace(/\s+/g, '-')}`} 
-                                                        />
-                                                        <button className="btn join-item btn-primary">
-                                                            <Share2 className="w-5 h-5" />
-                                                        </button>
+                                    <div>
+                                        <div className="flex flex-col items-center mb-8 text-center">
+                                            <h2 className="card-title text-2xl justify-center mb-2">Set the Tone</h2>
+                                            <p className="text-base-content/70">Choose how you want your farewell to sound</p>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                            {toneOptions.map((tone) => (
+                                                <motion.div
+                                                    key={tone.value}
+                                                    className={`card cursor-pointer hover:shadow-lg transition-all ${
+                                                        formData.tone === tone.value ? 'bg-primary/10 border-2 border-primary' : 'bg-base-200'
+                                                    }`}
+                                                    onClick={() => setFormData({ ...formData, tone: tone.value })}
+                                                    whileHover={{ scale: 1.02 }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                >
+                                                    <div className="card-body flex-row items-center gap-4">
+                                                        <span className="text-3xl">{tone.icon}</span>
+                                                        <div>
+                                                            <h3 className="font-medium">{tone.label}</h3>
+                                                        </div>
+                                                        {formData.tone === tone.value && (
+                                                            <div className="ml-auto">
+                                                                <Check className="w-5 h-5 text-primary" />
+                                                            </div>
+                                                        )}
                                                     </div>
+                                                </motion.div>
+                                            ))}
+                                        </div>
+
+                                        <div className="divider mb-8">Preview Your Settings</div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                            <div className="card bg-base-200">
+                                                <div className="card-body">
+                                                    <h3 className="card-title text-lg">Page Details</h3>
+                                                    <ul className="space-y-2 text-sm">
+                                                        <li className="flex justify-between">
+                                                            <span className="opacity-70">Title:</span>
+                                                            <span className="font-medium">{formData.title}</span>
+                                                        </li>
+                                                        <li className="flex justify-between">
+                                                            <span className="opacity-70">Tone:</span>
+                                                            <span className="font-medium capitalize">{formData.tone || 'Not set'}</span>
+                                                        </li>
+                                                        <li className="flex justify-between">
+                                                            <span className="opacity-70">Message Length:</span>
+                                                            <span className="font-medium">{formData.message.length} characters</span>
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                             </div>
-                                            
-                                            <div className="alert alert-warning mb-6">
-                                                <Clock className="w-5 h-5" />
-                                                <span>Your page will be available for 24 hours. Make sure to share it before time runs out!</span>
+
+                                            <div className="card bg-base-200">
+                                                <div className="card-body">
+                                                    <h3 className="card-title text-lg">Enhanced Features</h3>
+                                                    <ul className="space-y-2 text-sm">
+                                                        <li className="flex items-center gap-2">
+                                                            <Check className={`w-4 h-4 ${formData.includeGifs ? 'text-primary' : 'opacity-30'}`} />
+                                                            <span className={formData.includeGifs ? '' : 'opacity-50'}>GIFs</span>
+                                                        </li>
+                                                        <li className="flex items-center gap-2">
+                                                            <Check className={`w-4 h-4 ${formData.includeSounds ? 'text-primary' : 'opacity-30'}`} />
+                                                            <span className={formData.includeSounds ? '' : 'opacity-50'}>Sound Effects</span>
+                                                        </li>
+                                                        <li className="flex items-center gap-2">
+                                                            <Check className={`w-4 h-4 ${formData.includeAnimations ? 'text-primary' : 'opacity-30'}`} />
+                                                            <span className={formData.includeAnimations ? '' : 'opacity-50'}>Animations</span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
-                                        
-                                        <div className="card-actions justify-center gap-4">
-                                            <button className="btn btn-primary gap-2">
-                                                <Eye className="w-5 h-5" /> View Your Page
+
+                                        <div className="card-actions justify-between mt-6">
+                                            <button onClick={prevStep} className="btn btn-outline gap-2">
+                                                <ChevronLeft className="w-4 h-4" /> Back
                                             </button>
-                                            <button className="btn btn-outline gap-2">
-                                                <X className="w-5 h-5" /> Create Another
+                                            <button
+                                                onClick={handleSubmit}
+                                                className="btn btn-primary gap-2"
+                                                disabled={!formData.tone}
+                                            >
+                                                Create Page <Check className="w-4 h-4" />
                                             </button>
                                         </div>
                                     </div>
@@ -480,4 +581,5 @@ export default function CreatePage() {
             </div>
             <Footer />
         </>
-    );}
+    );
+}
