@@ -19,7 +19,16 @@ const Prompt = sequelize.define('Prompt', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    nouveaudepart: {
+
+    includegifs: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    background: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -34,7 +43,7 @@ const Prompt = sequelize.define('Prompt', {
 }, {
     tableName: 'prompts',
     timestamps: true,
-    createdAt: 'created_at',   // …mais mappe les bons noms
+    createdAt: 'created_at',
     updatedAt: 'updated_at'
 });
 

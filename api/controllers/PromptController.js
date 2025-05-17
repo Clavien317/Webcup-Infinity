@@ -1,59 +1,43 @@
 const Prompt = require("../models/Prompt");
-const { ChatMistralAI } = require("@langchain/mistralai");
-require("dotenv").config();
-const { PromptTemplate } = require("@langchain/core/prompts");
-const { RunnableSequence } = require("@langchain/core/runnables");
 
 const generation = async (req, res) => {
-  const { reaction, cas, ton, message, nouveaudepart, idUser } = req.body;
+  const { reaction, cas, ton, message, idUser, includegifs = false } = req.body;
+  const background = req.files?.background?.[0]?.filename ?? null;
+  const image      = req.files?.image?.[0]?.filename      ?? null;
 
-  // Vérification de tous les champs obligatoires (ajout message)
-  if (!reaction || !cas || !ton || !message || !nouveaudepart || !idUser) {
-    return res.status(400).json({ message: "Veuillez remplir tous les champs obligatoires." });
+  if (!reaction || !cas || !ton || !message || !idUser) {
+    return res
+      .status(400)
+      .json({ message: "Veuillez remplir tous les champs obligatoires." });
   }
 
-    const prompts = PromptTemplate.fromTemplate(`devine la langue et donne la réponse en JSON.
-    phrase : {phrase}
-    Réponse (au format JSON, sans texte autour) :
-    {
-    "language": "string"
-    }`);
-
   try {
-    // Création en base
-    const prompt = await Prompt.create({ reaction, cas, ton, message, nouveaudepart, idUser });
-
-    // Configuration de l'IA
-    const chat = new ChatMistralAI({
-      model: "mistral-large-latest",
-      temperature: 0,
-      apiKey: process.env.MISTRAL_AI_API_KEY,
+    const prompt = await Prompt.create({
+      reaction,
+      cas,
+      ton,
+      message,
+      idUser: Number(idUser),
+      includegifs: !!includegifs,      // cast en booléen
+      background,
+      image
     });
 
-    // Création de la chaîne (prompt puis IA)
-    const chain = RunnableSequence.from([prompts, chat]);
-
-    // Appel asynchrone et récupération de la réponse
-    const responseAI = await chain.invoke({ phrase: message });
-
-    // Log (optionnel)
-    console.log("Réponse IA:", responseAI);
-
-    // Réponse HTTP avec succès
-    res.status(201).json({
+    return res.status(201).json({
       message: "Prompt créé avec succès",
-      prompt,
-      aiResponse: responseAI,
+      prompt
     });
   } catch (error) {
     console.error("Erreur de création :", error);
-    res.status(500).json({ message: "Erreur lors de la création du prompt." });
+    return res
+      .status(500)
+      .json({ message: "Erreur lors de la création du prompt." });
   }
 };
 
 const modifiGeneration = async (req, res) => {
     const { id } = req.params;
-    const { reaction, cas, ton, message, nouveaudepart, idUser } = req.body;
+    const { reaction, cas, ton, message, idUser } = req.body;
 
     try {
         const prompt = await Prompt.findByPk(id);
@@ -65,7 +49,6 @@ const modifiGeneration = async (req, res) => {
         prompt.cas = cas || prompt.cas;
         prompt.ton = ton || prompt.ton;
         prompt.message = message || prompt.message;
-        prompt.nouveaudepart = nouveaudepart || prompt.nouveaudepart;
         prompt.idUser = idUser || prompt.idUser;
 
         await prompt.save();
