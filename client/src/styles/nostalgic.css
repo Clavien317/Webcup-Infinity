@@ -1,0 +1,145 @@
+/* Effet de vignette */
+.vignette {
+  position: relative;
+}
+
+.vignette::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0 0 100px 20px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+
+/* Effet de grain */
+.grain {
+  position: relative;
+}
+
+.grain::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/images/noise.png");
+  background-repeat: repeat;
+  opacity: 0.05;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* Effet de lignes de balayage */
+.scanlines {
+  position: relative;
+}
+
+.scanlines::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 0, 0, 0.05) 51%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+}
+
+/* Animation de clignotement pour le curseur de texte */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* Effet de dégradé radial pour l'ambiance mélancolique */
+.melancholic-gradient {
+  background: radial-gradient(
+    circle at center,
+    rgba(76, 29, 149, 0.15) 0%,
+    rgba(0, 0, 0, 0) 70%
+  );
+}
+
+/* Animation de flottement pour les souvenirs */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.floating {
+  animation: float 8s ease-in-out infinite;
+}
+
+/* Effet de flou pour les souvenirs qui s'estompent */
+.memory {
+  transition: filter 1s ease;
+}
+
+.memory:hover {
+  filter: blur(0);
+}
+
+/* Effet de papier ancien */
+.old-paper {
+  background-color: #f5f5f5;
+  background-image: radial-gradient(#ccc 1px, transparent 1px),
+    radial-gradient(#ccc 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  position: relative;
+}
+
+.old-paper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(210, 180, 140, 0.2);
+  pointer-events: none;
+}
+
+/* Gradient radial pour l'effet de vignette */
+.bg-gradient-radial {
+  background-image: radial-gradient(var(--tw-gradient-stops));
+}
+
+/* Animation de disparition lente */
+@keyframes fadeAway {
+  0% {
+    opacity: 0.8;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+}
+
+.fade-away {
+  animation: fadeAway 15s ease-in-out forwards;
+}
