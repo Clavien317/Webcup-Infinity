@@ -26,11 +26,11 @@ const Prompt = sequelize.define('Prompt', {
     },
     image: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     background: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     idUser: {
         type: DataTypes.INTEGER,

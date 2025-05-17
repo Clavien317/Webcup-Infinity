@@ -1,7 +1,7 @@
 const Prompt = require("../models/Prompt");
 
 const generation = async (req, res) => {
-  const { reaction, cas, ton, message, idUser, includegifs = false } = req.body;
+  const { reaction, cas, ton, message, idUser, includegifs } = req.body;
   const background = req.files?.background?.[0]?.filename ?? null;
   const image      = req.files?.image?.[0]?.filename      ?? null;
 
@@ -18,7 +18,7 @@ const generation = async (req, res) => {
       ton,
       message,
       idUser: Number(idUser),
-      includegifs: !!includegifs,      // cast en booléen
+      includegifs,
       background,
       image
     });
