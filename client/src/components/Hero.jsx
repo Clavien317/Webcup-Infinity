@@ -99,7 +99,7 @@ const Hero = () => {
                     </motion.button>
                     <motion.button 
                         onClick={() => navigate('/examples')}
-                        className="btn relative px-8 py-4 rounded-lg border border-pink-500/50 hover:bg-pink-500/10 transition-colors duration-300"
+                        className="btn relative px-8 py-4 rounded-lg border hover:bg-pink-500/10 transition-colors duration-300"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.98 }}
                     >
