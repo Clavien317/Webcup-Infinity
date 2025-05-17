@@ -1,57 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
 @plugin "daisyui" {
- themes: night --default, winter;
+  themes: black --default, winter;
 }
 
-.carreaux-bg {
- background-image:
-         linear-gradient(transparent 23px, rgba(128, 128, 128, 0.2) 24px, transparent 24px),
-         linear-gradient(90deg, transparent 23px, rgba(128, 128, 128, 0.2) 24px, transparent 24px);
- background-size: 40px 40px;
+* {
+    font-family: Poppins , "sans serif";
 }
-
-@keyframes blob {
- 0%, 100% {
-  transform: translateY(0px) scale(1);
- }
- 33% {
-  transform: translateY(-30px) scale(1.1);
- }
- 66% {
-  transform: translateY(20px) scale(0.9);
- }
-}
-.animate-blob {
- animation: blob 8s infinite;
-}
-.animation-delay-2000 {
- animation-delay: 2s;
-}
-.animation-delay-4000 {
- animation-delay: 4s;
-}
-
-.scroll-down-indicator {
- position: absolute;
- bottom: 20px;
- left: 50%;
- transform: translateX(-50%);
-
-}
-
-.scroll-down-indicator .arrow {
- transform: rotate(45deg);
- animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
- 0%, 100% {
-  transform: translateY(0) rotate(45deg);
-  opacity: 0.7;
- }
- 50% {
-  transform: translateY(15px) rotate(45deg);
-  opacity: 1;
- }
-}
-
