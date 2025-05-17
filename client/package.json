@@ -10,11 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tabler/icons-react": "^3.33.0",
     "@tailwindcss/vite": "^4.1.7",
+    "@tsparticles/engine": "^3.8.1",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.8.1",
     "clsx": "^2.1.1",
     "daisyui": "^5.0.35",
     "gsap": "^3.13.0",
+    "lucide-react": "^0.511.0",
     "motion": "^12.12.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
