@@ -52,9 +52,7 @@ const steps = [
 export default function CreatePage() {
     const [step, setStep] = useState(1);
     const [selectedEmotion, setSelectedEmotion] = useState(null);
-    const [selectedEmotion, setSelectedEmotion] = useState(null);
     const [formData, setFormData] = useState({
-        title: "My Farewell Page",
         title: "My Farewell Page",
         tone: "",
         message: "",
