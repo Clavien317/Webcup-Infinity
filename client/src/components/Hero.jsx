@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, ArrowDown } from "lucide-react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { BackgroundBeams } from "../ui/BackgroundBeams";
@@ -59,6 +59,26 @@ const Hero = () => {
                     </button>
                 </motion.div>
             </div>
+            
+            {/* Scroll down indicator with bounce animation */}
+            <motion.div 
+                className="absolute bottom-10 z-10 flex flex-col items-center"
+                initial={{ opacity: 0 }}
+                animate={{ 
+                    opacity: 1,
+                    y: [0, 10, 0]
+                }}
+                transition={{ 
+                    delay: 1.2,
+                    duration: 1.5, 
+                    repeat: Infinity,
+                    repeatType: "loop"
+                }}
+            >
+                <span className="text-white/70 text-sm mb-2">Scroll Down</span>
+                <ArrowDown className="h-6 w-6 text-pink-500" />
+            </motion.div>
+            
             <BackgroundBeams className="absolute top-0 left-0 w-full h-full z-0" />
         </div>
     );
