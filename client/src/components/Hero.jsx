@@ -1,31 +1,138 @@
-import {IconArrowDown, IconArrowRight, IconSparkles} from "@tabler/icons-react";
+/* eslint-disable no-unused-vars */
+import { ArrowRight, Sparkles, ArrowDown, Flame } from "lucide-react";
+import { motion } from "motion/react";
+import { useNavigate } from "react-router-dom";
+import { BackgroundBeams } from "../ui/BackgroundBeams";
 
-const Hero = ()=>{
+const Hero = () => {
+    const navigate = useNavigate();
+    
     return (
-        <div className="h-screen carreaux-bg w-full">
-            <div className="font-semibold h-full w-full flex flex-col items-center justify-center">
-                <div
-                    className="absolute top-10 left-10 w-80 h-80 bg-success rounded-full filter blur-3xl opacity-35 animate-blob"></div>
-                <div
-                    className="absolute bottom-10 right-10 w-72 h-72 bg-warning rounded-full filter blur-2xl opacity-35 animate-blob animation-delay-4000"></div>
-
-                <p id="hero-text" className="text-center px-12 lg:text-8xl/30  text-5xl/15">Craft & <span
-                    className="bg-accent px-4">build</span> highly performant application</p>
-                <div className="mt-8 flex flex-col md:flex-row gap-4">
-                    <button className="btn btn-outline btn-primary">Get started <IconArrowRight/></button>
-                    <button className="btn btn-link text-secondary">Having project in mind ? <IconSparkles/>
-                    </button>
-                </div>
-                <div className="scroll-down-indicator">
-                    <button className="arrow bg-primary-content btn btn-circle btn-soft">
-                        <IconArrowDown/>
-                    </button>
-                </div>
-
+        <div className="relative h-screen w-ful flex flex-col items-center justify-center overflow-hidden bg-black">
+            <div className="w-full absolute inset-0 h-screen bg-gradient-to-b from-black via-purple-900/20 to-black">
             </div>
+            
+            <div className="relative z-10 text-center px-6 md:px-10 py-10 md:py-24 max-w-5xl mx-auto">
+                <motion.div
+                    className="absolute -top-20 left-1/2 transform -translate-x-1/2 w-64 h-64 rounded-full bg-pink-500/20 blur-3xl"
+                    animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.5, 0.8, 0.5]
+                    }}
+                    transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+                
+                <motion.h1 
+                    className="text-5xl md:text-7xl font-bold mb-8 z-10 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-fuchsia-300 to-purple-600 drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]"
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                >
+                    <motion.span 
+                        className="text-pink-500 inline-block"
+                        animate={{ 
+                            scale: [1, 1.05, 1],
+                        }}
+                        transition={{ 
+                            duration: 2, 
+                            repeat: Infinity,
+                            repeatType: "reverse" 
+                        }}
+                    >
+                        TheEnd
+                    </motion.span>
+                    <motion.span
+                        className="inline-block"
+                        animate={{
+                            rotateY: [0, 10, 0],
+                        }}
+                        transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            repeatType: "reverse"
+                        }}
+                    >
+                        .page
+                    </motion.span>
+                </motion.h1>
+                
+                <motion.p 
+                    className="text-xl md:text-2xl mb-4 text-white/90 max-w-2xl mx-auto font-medium"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3, duration: 0.8 }}
+                >
+                    <span className="text-pink-400 font-bold italic">"Because if it's the end, might as well make it unforgettable."</span>
+                </motion.p>
+                
+                <motion.p 
+                    className="text-lg md:text-xl mb-10 text-white/80 max-w-2xl mx-auto"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5, duration: 0.8 }}
+                >
+                    Create your dramatic farewell page. Whether you're leaving a job, 
+                    ending a relationship, or closing a chapter in your life - <span className="text-pink-400">make it burn</span>.
+                </motion.p>
+                
+                <motion.div
+                    className="flex flex-col sm:flex-row gap-4 justify-center"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6, duration: 0.8 }}
+                >
+                    <motion.button 
+                        onClick={() => navigate('/create')}
+                        className="btn relative px-8 py-4 overflow-hidden rounded-lg bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-600 shadow-lg shadow-pink-500/30"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                    >
+                        <div className="absolute inset-0 w-3 bg-white transition-all duration-300 ease-out group-hover:w-full opacity-10"></div>
+                        <div className="relative flex items-center justify-center gap-2">
+                            <span className="font-bold">Create Your Page</span>
+                            <Flame className="h-5 w-5 animate-pulse" />
+                        </div>
+                    </motion.button>
+                    <motion.button 
+                        onClick={() => navigate('/examples')}
+                        className="btn relative px-8 py-4 rounded-lg border hover:bg-pink-500/10 transition-colors duration-300"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.98 }}
+                    >
+                        <div className="relative flex items-center justify-center gap-2">
+                            <span>See Examples</span>
+                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </div>
+                    </motion.button>
+                </motion.div>
+            </div>
+            
+            {/* Scroll down indicator with bounce animation */}
+            <motion.div 
+                className="absolute bottom-10 z-10 flex flex-col items-center"
+                initial={{ opacity: 0 }}
+                animate={{ 
+                    opacity: 1,
+                    y: [0, 10, 0]
+                }}
+                transition={{ 
+                    delay: 1.2,
+                    duration: 1.5, 
+                    repeat: Infinity,
+                    repeatType: "loop"
+                }}
+            >
+                <span className="text-pink-400 text-sm mb-2 font-medium">Discover More</span>
+                <ArrowDown className="h-6 w-6 text-pink-500" />
+            </motion.div>
+            
+            <BackgroundBeams className="absolute top-0 left-0 w-full h-full z-0 opacity-70" />
         </div>
-
-    )
-}
+    );
+};
 
 export default Hero;
