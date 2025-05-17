@@ -77,6 +77,27 @@ const Hero = () => {
       {/* Gradient overlay for better text readability */}
       <div className="w-full absolute inset-0 h-screen bg-gradient-to-b from-white/70 via-transparent to-white/70 z-1"></div>
 
+      {/* Positive Mind Text Positioning */}
+      <div className="absolute inset-0 flex items-center justify-around px-10 md:px-[0px] z-5 pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 0.8, x: 0 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="text-5xl md:text-7xl font-bold text-pink-600/80"
+        >
+          Positive
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 0.8, x: 0 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="text-5xl md:text-7xl font-bold text-pink-600/80"
+        >
+          Mind
+        </motion.div>
+      </div>
+
       {/* Main content */}
       <div className="relative z-10 text-center px-6 md:px-10 py-10 md:py-24 max-w-4xl mx-auto">
         {/* Animated glow effect */}
