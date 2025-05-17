@@ -2,7 +2,7 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
-import { Flame, ArrowRight, ArrowDown, Sparkles } from "lucide-react";
+import { Flame, ArrowDown } from "lucide-react";
 import { BackgroundBeams } from "../ui/BackgroundBeams";
 
 const Hero = () => {
@@ -63,8 +63,6 @@ const Hero = () => {
             </div>
             <BackgroundBeams className="absolute top-0 left-0 w-full h-full z-0" />
         </div>
-    );
-};
     );
 };
 
