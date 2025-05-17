@@ -22,7 +22,7 @@ const Navbar = () => {
                     </ul>
                 </div>
                 <Link to="/" className="btn btn-ghost text-xl">
-                    <span className="text-pink-500 font-bold">TheEnd</span>.page
+                    <span className="text-primary font-bold">TheEnd</span>.page
                 </Link>
             </div>
             <div className="navbar-center hidden lg:flex">
@@ -34,7 +34,7 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end">
-                <Link to="/create" className="btn relative px-8 py-4 overflow-hidden rounded-lg bg-pink-500">
+                <Link to="/create" className="btn btn-primary">
                     Create Page
                 </Link>
             </div>
