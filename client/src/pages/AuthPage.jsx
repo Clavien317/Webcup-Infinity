@@ -90,11 +90,12 @@ const AuthPage = () => {
         );
 
         if (result.success) {
-          setSuccess("Registration successful! Please log in.");
+          setSuccess("Registration successful! ");
           setTimeout(() => {
             setIsLogin(true);
             resetForm();
-          }, 1500);
+            navigate("/examples");
+          }, 1000);
         } else {
           setError(result.error || "Registration failed");
         }
