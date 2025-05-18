@@ -56,3 +56,39 @@ export const useFadeAnimation = (selector, options = {}) => {
     };
   }, [selector, duration, delay, ease]);
 };
+
+// Ajout de la fonction useHoverAnimation manquante
+export const useHoverAnimation = (ref, options = {}) => {
+  const { scale = 1.05, duration = 0.3, ease = "power2.out" } = options;
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    const element = ref.current;
+
+    const handleMouseEnter = () => {
+      gsap.to(element, {
+        scale,
+        duration,
+        ease,
+      });
+    };
+
+    const handleMouseLeave = () => {
+      gsap.to(element, {
+        scale: 1,
+        duration,
+        ease,
+      });
+    };
+
+    element.addEventListener("mouseenter", handleMouseEnter);
+    element.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      element.removeEventListener("mouseenter", handleMouseEnter);
+      element.removeEventListener("mouseleave", handleMouseLeave);
+      gsap.killTweensOf(element);
+    };
+  }, [ref, scale, duration, ease]);
+};
