@@ -77,7 +77,7 @@ const AuthPage = () => {
 
         if (result.success) {
           setSuccess("Login successful!");
-          setTimeout(() => navigate("/"), 1500);
+          setTimeout(() => navigate("/examples"), 1000);
         } else {
           setError(result.error || "Login failed");
         }
@@ -88,7 +88,6 @@ const AuthPage = () => {
           values.email,
           values.mot_de_passe
         );
-        
 
         if (result.success) {
           setSuccess("Registration successful! Please log in.");
