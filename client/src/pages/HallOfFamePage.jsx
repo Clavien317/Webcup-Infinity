@@ -32,7 +32,7 @@ export default function HallOfFamePage() {
         createdAt: item.created_at,
         votes: item.reponse?.length || 0,
         hasVoted: null,
-        comments: item.reponse || [],
+        comments: item.reponse || '',
         scenario: item.Prompt?.cas,
         tone: item.Prompt?.ton,
         message: item.Prompt?.message,

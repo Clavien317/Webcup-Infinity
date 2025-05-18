@@ -122,14 +122,7 @@ export default function FarewellCard({ page }) {
 
           <div className="line-clamp-3 mb-4">
             {
-              comments.map((cmt, idx) => (
-                  <p key={idx} className="bg-base-200 p-3 rounded-lg">
-                    <span className="text-sm">
-                      {cmt.texte}{" "}
-                    </span>
-                  </p>
-                ))
-
+              comments
             }
               
           </div>
