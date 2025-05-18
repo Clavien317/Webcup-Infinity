@@ -235,7 +235,7 @@ export default function CreatePage() {
 
     try {
       // First, send data to your backend
-      //   const response = await axios.post("/generation/post", formData);
+        const result = await axios.post("/generation/post", formData);
 
       // Prepare the card data with selected emotion and form data
       const cardData = {
