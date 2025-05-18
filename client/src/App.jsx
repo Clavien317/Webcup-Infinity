@@ -32,7 +32,7 @@ export default function App() {
 
   return (
     <>
-      {isLoading && <LoadingScreen />}
+      {/* {isLoading && <LoadingScreen />} */}
 
       <div
         className={
@@ -54,10 +54,12 @@ export default function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/create" element={<CreatePage />} />
                 <Route path="/examples" element={<HallOfFamePage />} />
+                <Route path="/farewell/:id" element={<FarewellDetail />} />
                 <Route path="/card/:id" element={<CardPage />} />
                 <Route path="/card" element={<CardPage />} />
                 <Route path="how-it-works" element={<HowItWorksPage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/auth" element={<AuthPage />} />
               </Routes>
             </Suspense>
           </Router>

@@ -97,6 +97,13 @@ export default function CreatePage() {
     const [isLoading, setIsLoading] = useState(false);
     const [step, setStep] = useState(1);
     const [selectedEmotion, setSelectedEmotion] = useState(null);
+    const [user,setUser] = useState(null)
+
+    useEffect(()=>
+    {
+        const stored = localStorage.getItem("user")
+        setUser(JSON.parse(stored))    
+    },[])
     const [formData, setFormData] = useState({
         title: "My Farewell Page",
         tone: "",
@@ -106,7 +113,8 @@ export default function CreatePage() {
         backgroundMusic: null,
         includeGifs: false,
         includeSounds: false,
-        includeAnimations: false
+        includeAnimations: false,
+        idUser: user?.id
     });
     const [timeLeft, setTimeLeft] = useState(1440); // 24 hours in minutes
     const [errors, setErrors] = useState({});
@@ -169,42 +177,32 @@ export default function CreatePage() {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
+            e.preventDefault();
+            console.log("Form submitted:", formData);
+            await axios.post("/generation/post", formData)
+            nextStep();
+            setIsLoading(true);
 
-        try {
-            const cardData = {
-                title: formData.title,
-                tone: selectedEmotion.name.toLowerCase(),
-                scenario: formData.scenario,
-                message: formData.message,
-                images: [
-                    "/src/assets/2578.jpg", // Replace with actual uploaded images
-                    "/src/assets/sary1.jpg",
-                    "/src/assets/sary2.jpg",
-                ],
-                generated: {
-                    intro: `As I embark on this ${selectedEmotion.name.toLowerCase()} journey...`,
-                    body: formData.message,
-                    conclusion: "Looking forward to what lies ahead",
-                    quotes: ["Life is about the journey, not the destination"],
-                },
-                settings: {
-                    includeGifs: formData.includeGifs,
-                    includeSounds: formData.includeSounds,
-                    includeAnimations: formData.includeAnimations,
-                }
-            };
+            try {
+                // Simulate API call with mock response
+                await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // Navigate to card page with the generated data
-            navigate('/card', {
-                state: { cardData }
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            setIsLoading(false);
-        }
-    };
+                const generatedCard = {
+                    ...formData,
+                    title: mockResponse.title(formData),
+                    generated: mockResponse.content(formData),
+                    timestamp: new Date().toISOString(),
+                    expiresIn: "24 hours"
+                };
+
+                // Navigate to card page with generated data
+                navigate('/card', {
+                    state: { cardData: generatedCard }
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                setIsLoading(false);
+            }
 
     // Format time remaining
     const formatTimeLeft = () => {

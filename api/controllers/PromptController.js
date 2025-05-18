@@ -1,9 +1,14 @@
 const Prompt = require("../models/Prompt");
 require("dotenv").config();
+const { ChatMistralAI } = require("@langchain/mistralai");
+const { PromptTemplate } = require("@langchain/core/prompts");
+const { RunnableSequence } = require("@langchain/core/runnables");
+const ReponsePrompt = require('../models/ReponsePrompt');
+
 
 const generation = async (req, res) => {
   
-  const { title, scenario, tone, message, idUser, includeGifs } = req.body|| {};
+  let { title, scenario, tone, message, idUser, includeGifs } = req.body|| {};
   
   const background = req.files?.background?.[0]?.filename ?? null;
   const image      = req.files?.image?.[0]?.filename      ?? null;
@@ -20,54 +25,47 @@ const generation = async (req, res) => {
     
     Ta tâche est de rédiger un message clair, direct et percutant dont l’objectif est de mettre fin à une situation, une relation ou un engagement.
     
-    - Utilise un ton très {ton}.
-    - Prends en compte le contexte suivant de l'utilisateur a envoyé : {cas}
-    - Intègre subtilement le point de vue de l’utilisateur exprimé ici (si il y'en a) : {message}
+    - Utilise un ton très ${tone}.
+    - Prends en compte le contexte suivant de l'utilisateur a envoyé : ${title}
+    - Intègre subtilement le point de vue de l’utilisateur exprimé ici (si il y'en a) : ${message}
     - La réponse doit être uniquement le message généré, sans aucun mot ou caractère supplémentaire avant ou après, ni aucune variable.
     
     Ne retourne que le texte final, sans cadre ni explication.
     enleve les: Chère [Nom], [Votre Nom]
     `);
 
+    const chat = new ChatMistralAI({
+    model: "codestral-latest",
+    temperature: 0,
+    apiKey: process.env.MISTRAL_AI_API_KEY,
+  });
+
+  const chain = RunnableSequence.from([prompts, chat]);
+
+  const result = await chain.invoke({tone,title,message});
+  let data = result.content.trim();
+  data = data.replace(/^["']|["']$/g, "")
+
+    message += parseInt(Math.random()*999)
+
   try {
-    // Création en base
     const prompt = await Prompt.create({
       reaction:title,
       cas:scenario,
       ton:tone,
-      message,
+      message:message,
       idUser: Number(idUser)||2,
       includegifs:includeGifs,
       background,
       image
     });
 
+      await ReponsePrompt.create({ reponse:data, idPrompt:prompt.id});
+
     return res.status(201).json({
-      nouveaudepart,
       idUser,
     });
 
-    // Configuration de l'IA
-    const chat = new ChatMistralAI({
-      model: "mistral-large-latest",
-      temperature: 0,
-      apiKey: process.env.MISTRAL_AI_API_KEY,
-    });
-
-    // Création de la chaîne (prompt puis IA)
-    const chain = RunnableSequence.from([prompts, chat]);
-
-    // Appel asynchrone et récupération de la réponse
-    const responseAI = await chain.invoke({ phrase: message });
-
-    // Log (optionnel)
-    console.log("Réponse IA:", responseAI);
-
-    // Réponse HTTP avec succès
-    res.status(201).json({
-      message: "Prompt créé avec succès",
-      prompt,
-    });
   } catch (error) {
     console.error("Erreur de création :", error);
     return res

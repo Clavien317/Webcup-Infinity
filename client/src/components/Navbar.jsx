@@ -1,9 +1,23 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, LogOut, User } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
+import { cn } from "../lib/utils";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
+
+  // Fonction pour obtenir l'avatar avec la première lettre de l'email
+  const getInitial = (email) => {
+    return email ? email.charAt(0).toUpperCase() : "U";
+  };
+
+  // Fonction pour gérer la déconnexion
+  const handleLogout = () => {
+    logout();
+    setIsOpen(false);
+  };
 
   return (
     <nav className="fixed w-full backdrop-blur-sm z-50 ">
@@ -19,17 +33,14 @@ const Navbar = () => {
           {/* Desktop menu */}
           <div className="hidden lg:flex items-center space-x-4">
             <div className="flex space-x-4">
-              <Link
-                to="/"
-                className="px-3 py-2 rounded-md text-sm font-medium"
-              >
+              <Link to="/" className="px-3 py-2 rounded-md text-sm font-medium">
                 Home
               </Link>
               <Link
                 to="/examples"
                 className="px-3 py-2 rounded-md text-sm font-medium"
               >
-                Examples
+                Hall
               </Link>
               <Link
                 to="/how-it-works"
@@ -44,15 +55,41 @@ const Navbar = () => {
                 About
               </Link>
             </div>
-            <Link
-              to="/create"
-              className="btn btn-primary"
-            >
-              Create Page
-            </Link>
+
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <div
+                    className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center text-white",
+                      "bg-gradient-to-r from-pink-500 to-purple-600"
+                    )}
+                  >
+                    {getInitial(user?.email)}
+                  </div>
+                  <span className="text-sm font-medium">{user?.nom}</span>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-red-500 hover:text-red-600"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Logout</span>
+                </button>
+              </div>
+            ) : (
+              <Link to="/auth" className="btn btn-primary">
+                Login
+              </Link>
+            )}
+
             <label className="swap swap-rotate">
               {/* this hidden checkbox controls the state */}
-              <input type="checkbox" className="theme-controller" value="night" />
+              <input
+                type="checkbox"
+                className="theme-controller"
+                value="night"
+              />
 
               {/* sun icon */}
               <Sun className="swap-off" />
@@ -106,7 +143,7 @@ const Navbar = () => {
               className="block px-3 py-2 rounded-md text-base font-medium"
               onClick={() => setIsOpen(false)}
             >
-              Examples
+              Hall
             </Link>
             <Link
               to="/how-it-works"
@@ -122,6 +159,38 @@ const Navbar = () => {
             >
               About
             </Link>
+
+            {isAuthenticated ? (
+              <>
+                <div className="flex items-center space-x-2 px-3 py-2">
+                  <div
+                    className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center text-white",
+                      "bg-gradient-to-r from-pink-500 to-purple-600"
+                    )}
+                  >
+                    {getInitial(user?.email)}
+                  </div>
+                  <span className="text-base font-medium">{user?.nom}</span>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2 w-full px-3 py-2 rounded-md text-base font-medium text-red-500"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span>Logout</span>
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/auth"
+                className="btn btn-primary w-full"
+                onClick={() => setIsOpen(false)}
+              >
+                Login
+              </Link>
+            )}
+
             <Link
               to="/create"
               className="btn btn-primary"

@@ -97,13 +97,13 @@ export default function TopRatedPages() {
             ))}
           </div>
         )}
-
+        {/* 
         <div className="card-actions justify-center mt-4">
           <a href="/hall-of-fame" className="btn btn-outline btn-sm gap-2">
             View All
             <ExternalLink className="w-3 h-3" />
           </a>
-        </div>
+        </div> */}
       </div>
     </div>
   );

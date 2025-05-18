@@ -1,22 +1,26 @@
 /* eslint-disable no-unused-vars */
 import { ExternalLink, MessageCircle } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import CommentModal from "./CommentModal";
+import axios from "axios";
 
 export default function FarewellCard({ page }) {
   const [expanded, setExpanded] = useState(false);
-  const [showComments, setShowComments] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-  const [voteCount, setVoteCount] = useState(page.votes);
-  const [hasVoted, setHasVoted] = useState(page.hasVoted);
+  const [voteCount, setVoteCount] = useState(page.votes || 0);
+  const [hasVoted, setHasVoted] = useState(page.hasVoted || false);
 
   const truncateMessage = (message, maxLength = 200) => {
+    if (!message) return "";
     if (message.length <= maxLength) return message;
     return message.substring(0, maxLength) + "...";
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return "Unknown date";
+
     const date = new Date(dateString);
     const now = new Date();
     const diffTime = Math.abs(now - date);
@@ -67,28 +71,32 @@ export default function FarewellCard({ page }) {
     return tones[toneValue] || toneValue;
   };
 
-  const toggleComments = () => {
-    setShowComments(!showComments);
-  };
-
-  const handleVote = () => {
-    if (hasVoted) {
-      setVoteCount((prev) => prev - 1);
-      setHasVoted(null);
-    } else {
-      setVoteCount((prev) => prev + 1);
-      setHasVoted(true);
+  const handleVote = async () => {
+    try {
+      if (hasVoted) {
+        // Annuler le vote
+        await axios.post(`/votes/${page.id}/remove`);
+        setVoteCount((prev) => prev - 1);
+        setHasVoted(false);
+      } else {
+        // Ajouter un vote
+        await axios.post(`/votes/${page.id}/add`);
+        setVoteCount((prev) => prev + 1);
+        setHasVoted(true);
+      }
+    } catch (error) {
+      console.error("Error voting:", error);
     }
   };
-
-  const { title, author, avatar, createdAt, comments, emotion, message } = page;
 
   return (
     <>
       <motion.div
-        className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all"
+        className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all h-full"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -5 }}
+        transition={{ duration: 0.3 }}
       >
         <div className="card-body">
           <div className="flex items-center gap-4 mb-4">
@@ -96,34 +104,58 @@ export default function FarewellCard({ page }) {
               <div className="w-12 h-12 rounded-full">
                 <img
                   src={
-                    avatar ||
-                    `https://api.dicebear.com/7.x/avataaars/svg?seed=${author}`
+                    page.avatar ||
+                    `https://api.dicebear.com/7.x/avataaars/svg?seed=${page.author}`
                   }
-                  alt={author}
+                  alt={page.author}
                 />
               </div>
             </div>
             <div>
-              <h3 className="font-bold">{author}</h3>
-              <p className="text-sm opacity-70">
-                {new Date(createdAt).toLocaleDateString()}
-              </p>
+              <h3 className="font-bold">{page.author}</h3>
+              <p className="text-sm opacity-70">{formatDate(page.createdAt)}</p>
             </div>
+            {page.emotion && (
+              <div className="ml-auto">
+                <span className={`badge ${page.emotion.color}`}>
+                  {page.emotion.emoji} {page.emotion.name}
+                </span>
+              </div>
+            )}
           </div>
 
           <h2 className="card-title mb-2">
-            {title}
-            <div className="badge badge-neutral">{emotion.name}</div>
+            <Link
+              to={`/farewell/${page.id}`}
+              className="hover:text-primary transition-colors"
+            >
+              {truncateMessage(page.message, 50)}
+            </Link>
           </h2>
 
-          <p className="line-clamp-3 mb-4">{message}</p>
+          <div className="line-clamp-3 mb-4 text-sm opacity-80">
+            {truncateMessage(page.reponse, 150)}
+          </div>
 
-          <div className="card-actions justify-between items-center mt-4">
+          {page.scenario && page.tone && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              <div className="badge badge-outline badge-sm">
+                {getScenarioLabel(page.scenario)}
+              </div>
+              <div className="badge badge-outline badge-sm capitalize">
+                {getToneLabel(page.tone)}
+              </div>
+            </div>
+          )}
+
+          <div className="card-actions justify-between items-center mt-auto">
             <div className="flex items-center gap-4">
               <button
                 className={`btn btn-sm ${
-                  hasVoted ? "btn-primary" : "btn-ghost"
-                }`}
+                  hasVoted
+                    ? "bg-pink-500 text-white hover:bg-pink-600"
+                    : "bg-white text-gray-800 hover:bg-gray-100"
+                } transition-colors`}
                 onClick={handleVote}
               >
                 Vote {voteCount > 0 && `(${voteCount})`}
@@ -132,13 +164,16 @@ export default function FarewellCard({ page }) {
                 className="btn btn-sm btn-ghost gap-2"
                 onClick={() => setIsCommentModalOpen(true)}
               >
-                <MessageCircle size={18} />
+                <MessageCircle size={16} />
                 {page.comments?.length || 0}
               </button>
             </div>
-            <button className="btn btn-primary btn-link text-primary">
-              <ExternalLink/>
-            </button>
+            <Link
+              to={`/farewell/${page.id}`}
+              className="btn btn-sm btn-primary btn-outline"
+            >
+              <ExternalLink size={16} />
+            </Link>
           </div>
         </div>
       </motion.div>
@@ -147,7 +182,7 @@ export default function FarewellCard({ page }) {
         isOpen={isCommentModalOpen}
         onClose={() => setIsCommentModalOpen(false)}
         pageId={page.id}
-        comments={[]}
+        comments={page.comments || []}
       />
     </>
   );

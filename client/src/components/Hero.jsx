@@ -3,10 +3,34 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Flame, ArrowRight, ArrowDown, Sparkles } from "lucide-react";
 import { BackgroundBeams } from "../ui/BackgroundBeams";
-
+import SplashScreen from "./SplashScreen";
+import { useEffect, useState } from "react";
 const Hero = () => {
   const navigate = useNavigate();
+  const [showSplash, setShowSplash] = useState(true);
 
+  // Vérifier si c'est la première visite
+  // Vérifier si c'est la première visite
+  useEffect(() => {
+    const hasVisited = localStorage.getItem("hasVisitedBefore");
+    if (hasVisited) {
+      setShowSplash(false);
+    } else {
+      // Marquer comme visité pour les prochaines fois
+      localStorage.setItem("hasVisitedBefore", "true");
+    }
+
+    // Pour les besoins de développement, vous pouvez réinitialiser avec:
+    // localStorage.removeItem("hasVisitedBefore");
+  }, []);
+
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+  };
+
+  if (showSplash) {
+    return <SplashScreen onComplete={handleSplashComplete} />;
+  }
   return (
     <div className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden">
       {/* Animated Background Gradient */}
@@ -136,7 +160,7 @@ const Hero = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
           >
-            <span>See Examples</span>
+            <span>See Hall</span>
             <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
           </motion.button>
         </motion.div>

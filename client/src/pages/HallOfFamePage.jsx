@@ -6,98 +6,124 @@ import { motion } from "motion/react";
 import { Filter, TrendingUp, Search, Award } from "lucide-react";
 import FarewellCard from "../components/FarewellCard.jsx";
 import TopRatedPages from "../components/TopRatedPages.jsx";
+import axios from "axios";
 
 export default function HallOfFamePage() {
+  axios.defaults.baseURL = import.meta.env.VITE_API_URL;
   const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("recent");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const fetchPages = async () => {
-      setLoading(true);
+      try {
+        setLoading(true);
 
-      // Updated mock data with avatars
-      const mockData = [
-        {
-          id: 1,
-          title: "Goodbye to My First Love",
-          author: "Sarah Johnson",
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah&backgroundColor=b6e3f4`,
-          createdAt: "2023-05-15T10:30:00Z",
-          votes: 15,
-          hasVoted: null,
-          comments: [],
-          scenario: "heartbreak",
-          tone: "nostalgic",
-          message:
-            "After 5 years together, we've decided to part ways. It wasn't an easy decision, but sometimes love isn't enough. I'll cherish every moment we shared, every laugh, every tear. You taught me what it means to truly love someone, and for that, I'll always be grateful.",
-          emotion: { name: "Nostalgic", emoji: "🥺", color: "text-amber-500" },
-        },
-        {
-          id: 2,
-          title: "Moving Across the World",
-          author: "Emma Williams",
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=Emma&backgroundColor=ffdfbf`,
-          createdAt: "2023-06-22T14:45:00Z",
-          votes: 10,
-          hasVoted: null,
-          comments: [],
-          scenario: "life-chapter",
-          tone: "hopeful",
-          message:
-            "Tomorrow, I board a plane to start a new life in Australia. Leaving behind friends, family, and everything familiar is terrifying, but also exciting. This isn't goodbye forever, just goodbye for now. I'm taking a piece of each of you with me on this journey.",
-          emotion: { name: "Hopeful", emoji: "✨", color: "text-yellow-500" },
-        },
-        {
-          id: 3,
-          title: "Closing My Business",
-          author: "Robert Miller",
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=Robert&backgroundColor=c0aede`,
-          createdAt: "2023-07-10T09:15:00Z",
-          votes: 8,
-          hasVoted: null,
-          comments: [],
-          scenario: "career",
-          tone: "reflective",
-          message:
-            "After 15 years, I'm closing the doors to Miller's Bookshop. What started as a small dream grew into a community hub. To all the customers who became friends, the staff who became family, and the books that brought us together - thank you for being part of this journey.",
-          emotion: {
-            name: "Reflective",
-            emoji: "🤔",
-            color: "text-indigo-500",
-          },
-        },
-        {
-          id: 4,
-          title: "Farewell to My Childhood Home",
-          author: "David Thompson",
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=David&backgroundColor=ffd5dc`,
-          createdAt: "2023-08-05T16:20:00Z",
-          votes: 6,
-          hasVoted: null,
-          comments: [],
-          scenario: "family-friends",
-          tone: "bittersweet",
-          message:
-            "Today, we sold the house I grew up in. The house where I took my first steps, celebrated birthdays, and created countless memories. It's strange to think that someone else will now make this place their home. But home isn't just a place, it's the people and memories we carry with us.",
-          emotion: {
-            name: "Bittersweet",
-            emoji: "😌",
-            color: "text-violet-500",
-          },
-        },
-      ];
+        // Construire les paramètres de requête
+        const params = new URLSearchParams();
+        if (filter !== "all") params.append("category", filter);
+        if (searchQuery) params.append("search", searchQuery);
+        params.append("sort", sortBy);
+        params.append("page", currentPage);
+        params.append("limit", itemsPerPage);
 
-      setTimeout(() => {
-        setPages(mockData);
+        // Récupérer les données depuis l'API
+        const { data } = await axios.get(`/reponses?${params.toString()}`);
+
+        // Transformer les données pour correspondre à notre structure
+        const pagesFromApi = data.map((item) => ({
+          id: item.id,
+          title: item.Prompt?.title || "Untitled",
+          author: item.Prompt?.author || "Anonymous",
+          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
+            item.Prompt?.author || "user"
+          )}&backgroundColor=b6e3f4`,
+          createdAt: item.created_at,
+          votes: item.votes || 0,
+          hasVoted: item.hasVoted || null,
+          comments: item.comments || [],
+          scenario: item.Prompt?.cas,
+          tone: item.Prompt?.ton,
+          message: item.Prompt?.message,
+          emotion: {
+            name: item.Prompt?.reaction,
+            emoji: getEmojiForEmotion(item.Prompt?.reaction),
+            color: getColorForEmotion(item.Prompt?.reaction),
+          },
+          reponse: item.reponse || "",
+        }));
+
+        // Calculer le nombre total de pages (si l'API renvoie cette information)
+        // Sinon, on peut estimer en fonction du nombre d'éléments reçus
+        setTotalPages(Math.max(1, Math.ceil(data.total / itemsPerPage) || 1));
+
+        setPages(pagesFromApi);
         setLoading(false);
-      }, 500);
+      } catch (error) {
+        console.error("Error fetching pages:", error);
+        setLoading(false);
+        setPages([]);
+      }
     };
 
     fetchPages();
-  }, [filter, sortBy, searchQuery]);
+  }, [filter, sortBy, searchQuery, currentPage]);
+
+  const getEmojiForEmotion = (emotion) => {
+    const emojis = {
+      Nostalgic: "🥺",
+      Happy: "😊",
+      Sad: "😢",
+      Angry: "😠",
+      Excited: "🤩",
+      Grateful: "🙏",
+      Hopeful: "🌟",
+      Reflective: "🤔",
+      Bittersweet: "😌",
+      Dramatic: "😲",
+      Ironic: "😏",
+      "Ultra Cringe": "😬",
+      Classy: "🧐",
+      Touching: "💖",
+      Absurd: "🙃",
+      "Passive-Aggressive": "😒",
+      Honest: "😇",
+    };
+    return emojis[emotion] || "👋";
+  };
+
+  const getColorForEmotion = (emotion) => {
+    const colors = {
+      Nostalgic: "text-amber-500",
+      Happy: "text-green-500",
+      Sad: "text-blue-500",
+      Angry: "text-red-500",
+      Excited: "text-purple-500",
+      Grateful: "text-teal-500",
+      Hopeful: "text-cyan-500",
+      Reflective: "text-indigo-500",
+      Bittersweet: "text-rose-500",
+      Dramatic: "text-orange-500",
+      Ironic: "text-lime-500",
+      "Ultra Cringe": "text-pink-500",
+      Classy: "text-slate-500",
+      Touching: "text-fuchsia-500",
+      Absurd: "text-emerald-500",
+      "Passive-Aggressive": "text-yellow-500",
+      Honest: "text-sky-500",
+    };
+    return colors[emotion] || "text-primary";
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <>
@@ -123,7 +149,12 @@ export default function HallOfFamePage() {
             {/* Sidebar avec filtres */}
             <div className="lg:col-span-1">
               <div className="sticky top-24 space-y-6">
-                <div className="card bg-base-100 shadow-xl">
+                <motion.div
+                  className="card bg-base-100 shadow-xl"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
                   <div className="card-body">
                     <h2 className="card-title flex items-center gap-2">
                       <Filter className="w-5 h-5 text-primary" />
@@ -155,7 +186,10 @@ export default function HallOfFamePage() {
                       <select
                         className="select select-bordered w-full"
                         value={filter}
-                        onChange={(e) => setFilter(e.target.value)}
+                        onChange={(e) => {
+                          setFilter(e.target.value);
+                          setCurrentPage(1); // Reset to first page on filter change
+                        }}
                       >
                         <option value="all">All Categories</option>
                         <option value="heartbreak">
@@ -175,7 +209,10 @@ export default function HallOfFamePage() {
                       <select
                         className="select select-bordered w-full"
                         value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
+                        onChange={(e) => {
+                          setSortBy(e.target.value);
+                          setCurrentPage(1); // Reset to first page on sort change
+                        }}
                       >
                         <option value="recent">Most Recent</option>
                         <option value="popular">Most Popular</option>
@@ -184,9 +221,15 @@ export default function HallOfFamePage() {
                       </select>
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
-                <TopRatedPages />
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                >
+                  <TopRatedPages />
+                </motion.div>
               </div>
             </div>
 
@@ -197,7 +240,12 @@ export default function HallOfFamePage() {
                   <span className="loading loading-spinner loading-lg"></span>
                 </div>
               ) : pages.length === 0 ? (
-                <div className="card bg-base-100 shadow-xl">
+                <motion.div
+                  className="card bg-base-100 shadow-xl"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
                   <div className="card-body text-center py-12">
                     <Award className="w-16 h-16 mx-auto opacity-30 mb-4" />
                     <h3 className="text-xl font-bold">No farewells found</h3>
@@ -205,11 +253,18 @@ export default function HallOfFamePage() {
                       Try adjusting your filters or search query
                     </p>
                   </div>
-                </div>
+                </motion.div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {pages.map((page, index) => (
-                    <FarewellCard key={page.id} page={page} />
+                    <motion.div
+                      key={page.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                    >
+                      <FarewellCard page={page} />
+                    </motion.div>
                   ))}
                 </div>
               )}
@@ -217,11 +272,51 @@ export default function HallOfFamePage() {
               {pages.length > 0 && (
                 <div className="flex justify-center mt-8">
                   <div className="join">
-                    <button className="join-item btn">«</button>
-                    <button className="join-item btn btn-active">1</button>
-                    <button className="join-item btn">2</button>
-                    <button className="join-item btn">3</button>
-                    <button className="join-item btn">»</button>
+                    <button
+                      className="join-item btn"
+                      onClick={() =>
+                        handlePageChange(Math.max(1, currentPage - 1))
+                      }
+                      disabled={currentPage === 1}
+                    >
+                      «
+                    </button>
+                    {/* Générer les boutons de pagination dynamiquement */}
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      // Logique pour afficher les pages autour de la page courante
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+
+                      return (
+                        <button
+                          key={pageNum}
+                          className={`join-item btn ${
+                            currentPage === pageNum ? "btn-active" : ""
+                          }`}
+                          onClick={() => handlePageChange(pageNum)}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+
+                    <button
+                      className="join-item btn"
+                      onClick={() =>
+                        handlePageChange(Math.min(totalPages, currentPage + 1))
+                      }
+                      disabled={currentPage === totalPages}
+                    >
+                      »
+                    </button>
                   </div>
                 </div>
               )}
