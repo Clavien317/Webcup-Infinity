@@ -1,56 +1,47 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
+// Créer le contexte
 const ThemeContext = createContext();
 
+// Hook personnalisé pour utiliser le contexte du thème
+export const useTheme = () => useContext(ThemeContext);
+
+// Fournisseur du contexte
 export const ThemeProvider = ({ children }) => {
-  // Check if user has a theme preference stored or use system preference
-  const getInitialTheme = () => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      return savedTheme;
-    }
+  // Vérifier si un thème est déjà stocké dans localStorage
+  const storedTheme = localStorage.getItem("theme");
 
-    // Check system preference
-    if (
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    ) {
-      return "dark";
-    }
+  // État initial basé sur localStorage ou préférence système
+  const [theme, setTheme] = useState(
+    storedTheme ||
+      (window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light")
+  );
 
-    return "light";
+  // Fonction pour basculer entre les thèmes
+  const toggleTheme = () => {
+    setTheme((prevTheme) => {
+      const newTheme = prevTheme === "dark" ? "light" : "dark";
+      localStorage.setItem("theme", newTheme);
+      return newTheme;
+    });
   };
 
-  const [theme, setTheme] = useState(getInitialTheme);
-
-  // Update theme in localStorage and document when it changes
+  // Appliquer le thème au document
   useEffect(() => {
-    localStorage.setItem("theme", theme);
-
-    // Add or remove dark class from document
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.classList.remove("dark", "light");
+    document.documentElement.classList.add(theme);
   }, [theme]);
 
-  // Toggle between light and dark themes
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
+  // Valeur du contexte
+  const value = {
+    theme,
+    toggleTheme,
+    isDark: theme === "dark",
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
-};
-
-export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
-  return context;
 };

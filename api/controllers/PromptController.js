@@ -1,37 +1,22 @@
 const Prompt = require("../models/Prompt");
-const { ChatMistralAI } = require("@langchain/mistralai");
-require("dotenv").config();
-const { PromptTemplate } = require("@langchain/core/prompts");
-const { RunnableSequence } = require("@langchain/core/runnables");
 
 const generation = async (req, res) => {
   const { reaction, cas, ton, message, nouveaudepart, idUser } = req.body;
 
   // Vérification de tous les champs obligatoires (ajout message)
-  if (!reaction || !cas || !ton || !message || !idUser) {
+  if (!reaction || !cas || !ton || !message || !nouveaudepart || !idUser) {
     return res
       .status(400)
       .json({ message: "Veuillez remplir tous les champs obligatoires." });
   }
 
-  const prompts = PromptTemplate.fromTemplate(`
-    Tu es un expert en communication émotionnelle.
-    
-    Ta tâche est de rédiger un message clair, direct et percutant dont l’objectif est de mettre fin à une situation, une relation ou un engagement.
-    
-    - Utilise un ton très {ton}.
-    - Prends en compte le contexte suivant de l'utilisateur a envoyé : {cas}
-    - Intègre subtilement le point de vue de l’utilisateur exprimé ici (si il y'en a) : {message}
-    - La réponse doit être uniquement le message généré, sans aucun mot ou caractère supplémentaire avant ou après, ni aucune variable.
-    
-    Ne retourne que le texte final, sans cadre ni explication.
-    enleve les: Chère [Nom], [Votre Nom]
-    `);
-
-  // Réponse (au format JSON, sans texte autour) :
-  // {
-  //   "language": "string"
-  // }
+  const prompts =
+    PromptTemplate.fromTemplate(`devine la langue et donne la réponse en JSON.
+    phrase : {phrase}
+    Réponse (au format JSON, sans texte autour) :
+    {
+    "language": "string"
+    }`);
 
   try {
     // Création en base
@@ -64,11 +49,12 @@ const generation = async (req, res) => {
     res.status(201).json({
       message: "Prompt créé avec succès",
       prompt,
-      aiResponse: responseAI,
     });
   } catch (error) {
     console.error("Erreur de création :", error);
-    res.status(500).json({ message: "Erreur lors de la création du prompt." });
+    return res
+      .status(500)
+      .json({ message: "Erreur lors de la création du prompt." });
   }
 };
 
