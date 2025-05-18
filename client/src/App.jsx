@@ -52,6 +52,7 @@ export default function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/create" element={<CreatePage />} />
                 <Route path="/examples" element={<HallOfFamePage />} />
+                <Route path="/farewell/:id" element={<FarewellDetail />} />
                 <Route path="/card/:id" element={<CardPage />} />
                 <Route path="/card" element={<CardPage />} />
               </Routes>
