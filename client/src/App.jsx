@@ -32,7 +32,7 @@ export default function App() {
 
   return (
     <>
-      {isLoading && <LoadingScreen />}
+      {/* {isLoading && <LoadingScreen />} */}
 
       <div
         className={
