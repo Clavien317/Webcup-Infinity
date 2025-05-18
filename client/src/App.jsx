@@ -59,6 +59,7 @@ export default function App() {
                 <Route path="/card" element={<CardPage />} />
                 <Route path="how-it-works" element={<HowItWorksPage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/auth" element={<AuthPage />} />
               </Routes>
             </Suspense>
           </Router>

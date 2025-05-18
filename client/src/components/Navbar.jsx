@@ -19,17 +19,14 @@ const Navbar = () => {
           {/* Desktop menu */}
           <div className="hidden lg:flex items-center space-x-4">
             <div className="flex space-x-4">
-              <Link
-                to="/"
-                className="px-3 py-2 rounded-md text-sm font-medium"
-              >
+              <Link to="/" className="px-3 py-2 rounded-md text-sm font-medium">
                 Home
               </Link>
               <Link
                 to="/examples"
                 className="px-3 py-2 rounded-md text-sm font-medium"
               >
-                Hall 
+                Hall
               </Link>
               <Link
                 to="/how-it-works"
@@ -44,15 +41,16 @@ const Navbar = () => {
                 About
               </Link>
             </div>
-            <Link
-              to="/create"
-              className="btn btn-primary"
-            >
-              Create Page
+            <Link to="/auth" className="btn btn-primary">
+              Login
             </Link>
             <label className="swap swap-rotate">
               {/* this hidden checkbox controls the state */}
-              <input type="checkbox" className="theme-controller" value="night" />
+              <input
+                type="checkbox"
+                className="theme-controller"
+                value="night"
+              />
 
               {/* sun icon */}
               <Sun className="swap-off" />
