@@ -16,7 +16,7 @@ const Prompt = sequelize.define('Prompt', {
         allowNull: false
     },
     message: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false
     },
 

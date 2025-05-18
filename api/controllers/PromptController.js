@@ -8,7 +8,7 @@ const ReponsePrompt = require('../models/ReponsePrompt');
 
 const generation = async (req, res) => {
   
-  const { title, scenario, tone, message, idUser, includeGifs } = req.body|| {};
+  let { title, scenario, tone, message, idUser, includeGifs } = req.body|| {};
   
   const background = req.files?.background?.[0]?.filename ?? null;
   const image      = req.files?.image?.[0]?.filename      ?? null;
@@ -46,20 +46,21 @@ const generation = async (req, res) => {
   let data = result.content.trim();
   data = data.replace(/^["']|["']$/g, "")
 
+    message += parseInt(Math.random()*999)
+
   try {
     const prompt = await Prompt.create({
       reaction:title,
       cas:scenario,
       ton:tone,
-      message,
-      idUser: Number(idUser),
+      message:message,
+      idUser: Number(idUser)||2,
       includegifs:includeGifs,
       background,
       image
     });
 
       await ReponsePrompt.create({ reponse:data, idPrompt:prompt.id});
-
 
     return res.status(201).json({
       idUser,

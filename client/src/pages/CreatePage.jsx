@@ -115,7 +115,7 @@ export default function CreatePage()
         includeGifs: false,
         includeSounds: false,
         includeAnimations: false,
-        idUser: user.id
+        idUser: user?.id
     });
     const [timeLeft, setTimeLeft] = useState(1440); // 24 hours in minutes
     const [errors, setErrors] = useState({});
