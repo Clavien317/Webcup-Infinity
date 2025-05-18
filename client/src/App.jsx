@@ -10,6 +10,8 @@ import ExamplesPage from "./pages/ExamplesPage";
 import { ThemeProvider } from "./context/ThemeContext";
 import AuthPage from "./pages/AuthPage";
 import HallOfFamePage from "./pages/HallOfFamePage";
+import HowItWorksPage from "./pages/HowItWorksPage";
+import AboutPage from "./pages/AboutPage";
 // Utilisons React.lazy pour le chargement différé des pages moins critiques
 const HallOfFame = React.lazy(() => import("./pages/HallOfFamePage"));
 const FarewellDetail = React.lazy(() => import("./pages/FarewellDetailPage"));
@@ -55,6 +57,8 @@ export default function App() {
                 <Route path="/farewell/:id" element={<FarewellDetail />} />
                 <Route path="/card/:id" element={<CardPage />} />
                 <Route path="/card" element={<CardPage />} />
+                <Route path="how-it-works" element={<HowItWorksPage />} />
+                <Route path="/about" element={<AboutPage />} />
               </Routes>
             </Suspense>
           </Router>

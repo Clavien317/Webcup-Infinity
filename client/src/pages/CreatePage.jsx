@@ -170,7 +170,6 @@ export default function CreatePage()
     };
 
     const handleSubmit = async (e) => {
-        const handleSubmit = async (e) => {
             e.preventDefault();
             console.log("Form submitted:", formData);
             await axios.post("/generation/post", formData)
@@ -197,7 +196,6 @@ export default function CreatePage()
                 console.error('Error:', error);
                 setIsLoading(false);
             }
-        };
 
         // Format time remaining
         const formatTimeLeft = () => {
