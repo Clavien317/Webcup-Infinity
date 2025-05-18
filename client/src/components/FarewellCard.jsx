@@ -82,7 +82,7 @@ export default function FarewellCard({ page }) {
     }
   };
 
-  const { title, author, avatar, createdAt, comments, emotion, message } = page;
+  const {author, avatar, createdAt, comments, emotion, message } = page;
 
   return (
     <>
@@ -113,13 +113,26 @@ export default function FarewellCard({ page }) {
           </div>
 
           <h2 className="card-title mb-2">
-            <Link to={`/farewell/${page.id}`} className="hover:underline">
-              {title}
-            </Link>
+            {/* <Link to={`/farewell/${page.id}`} className="hover:underline">
+              {message}
+            </Link> */}
+            {message}
             <div className="badge badge-neutral">{emotion.name}</div>
           </h2>
 
-          <p className="line-clamp-3 mb-4">{message}</p>
+          <div className="line-clamp-3 mb-4">
+            {
+              comments.map((cmt, idx) => (
+                  <p key={idx} className="bg-base-200 p-3 rounded-lg">
+                    <span className="text-sm">
+                      {cmt.texte}{" "}
+                    </span>
+                  </p>
+                ))
+
+            }
+              
+          </div>
 
           <div className="card-actions justify-between items-center mt-4">
             <div className="flex items-center gap-4">

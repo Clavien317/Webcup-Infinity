@@ -33,7 +33,6 @@ const generation = async (req, res) => {
     `);
 
   try {
-    // Création en base
     const prompt = await Prompt.create({
       reaction:title,
       cas:scenario,
@@ -48,22 +47,6 @@ const generation = async (req, res) => {
     return res.status(201).json({
       idUser,
     });
-
-    // Configuration de l'IA
-    const chat = new ChatMistralAI({
-      model: "mistral-large-latest",
-      temperature: 0,
-      apiKey: process.env.MISTRAL_AI_API_KEY,
-    });
-
-    // Création de la chaîne (prompt puis IA)
-    const chain = RunnableSequence.from([prompts, chat]);
-
-    // Appel asynchrone et récupération de la réponse
-    const responseAI = await chain.invoke({ phrase: message });
-
-    // Log (optionnel)
-    console.log("Réponse IA:", responseAI);
 
     // Réponse HTTP avec succès
     res.status(201).json({

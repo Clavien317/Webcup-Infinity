@@ -6,8 +6,10 @@ import { motion } from "motion/react";
 import { Filter, TrendingUp, Search, Award } from "lucide-react";
 import FarewellCard from "../components/FarewellCard.jsx";
 import TopRatedPages from "../components/TopRatedPages.jsx";
+import axios from "axios";
 
 export default function HallOfFamePage() {
+  axios.defaults.baseURL = import.meta.env.VITE_API_URL;
   const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
@@ -18,80 +20,31 @@ export default function HallOfFamePage() {
     const fetchPages = async () => {
       setLoading(true);
 
-      // Updated mock data with avatars
-      const mockData = [
-        {
-          id: 1,
-          title: "Goodbye to My First Love",
-          author: "Sarah Johnson",
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah&backgroundColor=b6e3f4`,
-          createdAt: "2023-05-15T10:30:00Z",
-          votes: 15,
-          hasVoted: null,
-          comments: [],
-          scenario: "heartbreak",
-          tone: "nostalgic",
-          message:
-            "After 5 years together, we've decided to part ways. It wasn't an easy decision, but sometimes love isn't enough. I'll cherish every moment we shared, every laugh, every tear. You taught me what it means to truly love someone, and for that, I'll always be grateful.",
-          emotion: { name: "Nostalgic", emoji: "🥺", color: "text-amber-500" },
+      const { data } = await axios.get("/reponses");
+      
+      const pagesFromApi = data.map((item) => ({
+        id: item.id,
+        title: item.Prompt?.title || "Untitled",
+        author: item.Prompt?.author || "Anonymous",
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
+          item.author || "user"
+        )}&backgroundColor=b6e3f4`,
+        createdAt: item.created_at,
+        votes: item.reponse?.length || 0,
+        hasVoted: null,
+        comments: item.reponse || [],
+        scenario: item.Prompt?.cas,
+        tone: item.Prompt?.ton,
+        message: item.Prompt?.message,
+        emotion: {
+          name: item.Prompt?.reaction,
+          emoji: "👋",
+          color: "text-primary",
         },
-        {
-          id: 2,
-          title: "Moving Across the World",
-          author: "Emma Williams",
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=Emma&backgroundColor=ffdfbf`,
-          createdAt: "2023-06-22T14:45:00Z",
-          votes: 10,
-          hasVoted: null,
-          comments: [],
-          scenario: "life-chapter",
-          tone: "hopeful",
-          message:
-            "Tomorrow, I board a plane to start a new life in Australia. Leaving behind friends, family, and everything familiar is terrifying, but also exciting. This isn't goodbye forever, just goodbye for now. I'm taking a piece of each of you with me on this journey.",
-          emotion: { name: "Hopeful", emoji: "✨", color: "text-yellow-500" },
-        },
-        {
-          id: 3,
-          title: "Closing My Business",
-          author: "Robert Miller",
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=Robert&backgroundColor=c0aede`,
-          createdAt: "2023-07-10T09:15:00Z",
-          votes: 8,
-          hasVoted: null,
-          comments: [],
-          scenario: "career",
-          tone: "reflective",
-          message:
-            "After 15 years, I'm closing the doors to Miller's Bookshop. What started as a small dream grew into a community hub. To all the customers who became friends, the staff who became family, and the books that brought us together - thank you for being part of this journey.",
-          emotion: {
-            name: "Reflective",
-            emoji: "🤔",
-            color: "text-indigo-500",
-          },
-        },
-        {
-          id: 4,
-          title: "Farewell to My Childhood Home",
-          author: "David Thompson",
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=David&backgroundColor=ffd5dc`,
-          createdAt: "2023-08-05T16:20:00Z",
-          votes: 6,
-          hasVoted: null,
-          comments: [],
-          scenario: "family-friends",
-          tone: "bittersweet",
-          message:
-            "Today, we sold the house I grew up in. The house where I took my first steps, celebrated birthdays, and created countless memories. It's strange to think that someone else will now make this place their home. But home isn't just a place, it's the people and memories we carry with us.",
-          emotion: {
-            name: "Bittersweet",
-            emoji: "😌",
-            color: "text-violet-500",
-          },
-        },
-      ];
+      }));
 
       setTimeout(() => {
-        setPages(mockData);
+        setPages(pagesFromApi);
         setLoading(false);
       }, 500);
     };
