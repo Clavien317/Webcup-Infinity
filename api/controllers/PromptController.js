@@ -1,11 +1,13 @@
 const Prompt = require("../models/Prompt");
 
 const generation = async (req, res) => {
-  const { reaction, cas, ton, message, idUser, includegifs } = req.body;
+  
+  const { title, scenario, tone, message, idUser, includeGifs } = req.body|| {};
+  
   const background = req.files?.background?.[0]?.filename ?? null;
   const image      = req.files?.image?.[0]?.filename      ?? null;
 
-  if (!reaction || !cas || !ton || !message || !idUser) {
+  if (!scenario || !tone || !message) {
     return res
       .status(400)
       .json({ message: "Veuillez remplir tous les champs obligatoires." });
@@ -13,12 +15,12 @@ const generation = async (req, res) => {
 
   try {
     const prompt = await Prompt.create({
-      reaction,
-      cas,
-      ton,
+      reaction:title,
+      cas:scenario,
+      ton:tone,
       message,
-      idUser: Number(idUser),
-      includegifs,
+      idUser: Number(idUser)||2,
+      includegifs:includeGifs,
       background,
       image
     });
