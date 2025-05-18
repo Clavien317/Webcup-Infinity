@@ -14,7 +14,7 @@ const Hero = () => {
   useEffect(() => {
     const hasVisited = localStorage.getItem("hasVisitedBefore");
     if (hasVisited) {
-      setShowSplash(true);
+      setShowSplash(false);
     } else {
       // Marquer comme visité pour les prochaines fois
       localStorage.setItem("hasVisitedBefore", "true");
