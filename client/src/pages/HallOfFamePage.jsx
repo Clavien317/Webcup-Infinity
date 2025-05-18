@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
@@ -17,19 +18,17 @@ export default function HallOfFamePage() {
     const fetchPages = async () => {
       setLoading(true);
 
-      // Dans une application réelle, vous feriez un appel API ici
-      // const response = await fetch(`/api/pages?filter=${filter}&sort=${sortBy}&search=${searchQuery}`);
-      // const data = await response.json();
-
-      // Données simulées
+      // Updated mock data with avatars
       const mockData = [
         {
           id: 1,
           title: "Goodbye to My First Love",
           author: "Sarah Johnson",
+          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah&backgroundColor=b6e3f4`,
           createdAt: "2023-05-15T10:30:00Z",
-          likes: 245,
-          comments: 32,
+          votes: 15,
+          hasVoted: null,
+          comments: [],
           scenario: "heartbreak",
           tone: "nostalgic",
           message:
@@ -40,9 +39,11 @@ export default function HallOfFamePage() {
           id: 2,
           title: "Moving Across the World",
           author: "Emma Williams",
+          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=Emma&backgroundColor=ffdfbf`,
           createdAt: "2023-06-22T14:45:00Z",
-          likes: 312,
-          comments: 47,
+          votes: 10,
+          hasVoted: null,
+          comments: [],
           scenario: "life-chapter",
           tone: "hopeful",
           message:
@@ -53,9 +54,11 @@ export default function HallOfFamePage() {
           id: 3,
           title: "Closing My Business",
           author: "Robert Miller",
+          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=Robert&backgroundColor=c0aede`,
           createdAt: "2023-07-10T09:15:00Z",
-          likes: 427,
-          comments: 56,
+          votes: 8,
+          hasVoted: null,
+          comments: [],
           scenario: "career",
           tone: "reflective",
           message:
@@ -70,9 +73,11 @@ export default function HallOfFamePage() {
           id: 4,
           title: "Farewell to My Childhood Home",
           author: "David Thompson",
+          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=David&backgroundColor=ffd5dc`,
           createdAt: "2023-08-05T16:20:00Z",
-          likes: 189,
-          comments: 28,
+          votes: 6,
+          hasVoted: null,
+          comments: [],
           scenario: "family-friends",
           tone: "bittersweet",
           message:
@@ -129,7 +134,7 @@ export default function HallOfFamePage() {
                       <label className="label">
                         <span className="label-text">Search</span>
                       </label>
-                      <div className="input-group">
+                      <div className="input-group flex flex-row gap-2">
                         <input
                           type="text"
                           placeholder="Search farewells..."

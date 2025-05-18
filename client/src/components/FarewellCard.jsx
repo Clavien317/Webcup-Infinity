@@ -1,13 +1,15 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+/* eslint-disable no-unused-vars */
+import { ExternalLink, MessageCircle } from "lucide-react";
 import { motion } from "motion/react";
-import { User, Heart, MessageSquare, Clock, ExternalLink } from "lucide-react";
-import VoteButton from "./VoteButton.jsx";
-import CommentSection from "./CommentSection.jsx";
+import { useState } from "react";
+import CommentModal from "./CommentModal";
 
 export default function FarewellCard({ page }) {
   const [expanded, setExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const [voteCount, setVoteCount] = useState(page.votes);
+  const [hasVoted, setHasVoted] = useState(page.hasVoted);
 
   const truncateMessage = (message, maxLength = 200) => {
     if (message.length <= maxLength) return message;
@@ -69,79 +71,84 @@ export default function FarewellCard({ page }) {
     setShowComments(!showComments);
   };
 
+  const handleVote = () => {
+    if (hasVoted) {
+      setVoteCount((prev) => prev - 1);
+      setHasVoted(null);
+    } else {
+      setVoteCount((prev) => prev + 1);
+      setHasVoted(true);
+    }
+  };
+
+  const { title, author, avatar, createdAt, comments, emotion, message } = page;
+
   return (
-    <motion.div
-      className="card bg-base-100 shadow-xl overflow-hidden"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      whileHover={{ y: -5 }}
-    >
-      <div className="card-body">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="avatar placeholder">
-            <div className="bg-neutral text-neutral-content rounded-full w-10">
-              <User className="w-6 h-6" />
+    <>
+      <motion.div
+        className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div className="card-body">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="avatar">
+              <div className="w-12 h-12 rounded-full">
+                <img
+                  src={
+                    avatar ||
+                    `https://api.dicebear.com/7.x/avataaars/svg?seed=${author}`
+                  }
+                  alt={author}
+                />
+              </div>
+            </div>
+            <div>
+              <h3 className="font-bold">{author}</h3>
+              <p className="text-sm opacity-70">
+                {new Date(createdAt).toLocaleDateString()}
+              </p>
             </div>
           </div>
-          <div>
-            <h3 className="font-medium">{page.author}</h3>
-            <div className="text-xs opacity-70 flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              {formatDate(page.createdAt)}
+
+          <h2 className="card-title mb-2">
+            {title}
+            <div className="badge badge-neutral">{emotion.name}</div>
+          </h2>
+
+          <p className="line-clamp-3 mb-4">{message}</p>
+
+          <div className="card-actions justify-between items-center mt-4">
+            <div className="flex items-center gap-4">
+              <button
+                className={`btn btn-sm ${
+                  hasVoted ? "btn-primary" : "btn-ghost"
+                }`}
+                onClick={handleVote}
+              >
+                Vote {voteCount > 0 && `(${voteCount})`}
+              </button>
+              <button
+                className="btn btn-sm btn-ghost gap-2"
+                onClick={() => setIsCommentModalOpen(true)}
+              >
+                <MessageCircle size={18} />
+                {page.comments?.length || 0}
+              </button>
             </div>
-          </div>
-          <div className="ml-auto">
-            <span className={`badge ${page.emotion.color}`}>
-              {page.emotion.emoji} {page.emotion.name}
-            </span>
+            <button className="btn btn-primary btn-link text-primary">
+              <ExternalLink/>
+            </button>
           </div>
         </div>
+      </motion.div>
 
-        <h2 className="card-title text-xl mb-2">{page.title}</h2>
-
-        <div className="flex flex-wrap gap-2 mb-3">
-          <div className="badge badge-outline">
-            {page.scenario === "heartbreak"
-              ? "Heartbreak & Relationships"
-              : page.scenario === "family-friends"
-              ? "Friends & Family"
-              : page.scenario === "career"
-              ? "Career & Work"
-              : page.scenario === "life-chapter"
-              ? "Life Chapter"
-              : "Other"}
-          </div>
-          <div className="badge badge-outline capitalize">{page.tone}</div>
-        </div>
-
-        <p className="mb-4 text-sm opacity-90">
-          {truncateMessage(page.message)}
-        </p>
-
-        <div className="flex items-center justify-between mt-auto pt-4 border-t border-base-300">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <Heart className="w-5 h-5 text-red-500" />
-              <span>{page.likes}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <MessageSquare className="w-5 h-5" />
-              <span>{page.comments}</span>
-            </div>
-          </div>
-
-          <a
-            href={`/farewell/${page.id}`}
-            className="btn btn-primary btn-sm gap-2"
-          >
-            Read More
-            <ExternalLink className="w-4 h-4" />
-          </a>
-        </div>
-
-        {showComments && <CommentSection pageId={page.id} />}
-      </div>
-    </motion.div>
+      <CommentModal
+        isOpen={isCommentModalOpen}
+        onClose={() => setIsCommentModalOpen(false)}
+        pageId={page.id}
+        comments={[]}
+      />
+    </>
   );
 }

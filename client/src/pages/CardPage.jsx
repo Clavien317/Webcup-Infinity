@@ -121,47 +121,27 @@ export default function CardPage() {
                 </div>
               </motion.div>
 
-              {/* Images Grid */}
-              <div className="grid grid-cols-2 gap-4">
-                {images.slice(0, 4).map((img, idx) => (
-                  <motion.div
-                    key={idx}
-                    className="overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.1 }}
-                  >
-                    <figure className="aspect-square">
-                      <img
-                        src={img}
-                        alt={`Memory ${idx + 1}`}
-                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                      />
-                    </figure>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Timeline */}
-              <div className="mt-6 pl-2 border-l-2 border-primary/30 space-y-4">
-                {[
-                  "La rencontre marquante",
-                  "Un éclat de rire inattendu",
-                  "Un silence apaisant",
-                  "Le moment où tout a changé",
-                ].map((event, index) => (
-                  <motion.div
-                    key={index}
-                    className="pl-4"
-                    initial={{ x: -10, opacity: 0 }}
-                    whileInView={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.1 * index }}
-                  >
-                    <p className="text-sm text-muted-foreground">• {event}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
+                            {/* Images Grid */}
+                            <div className="grid grid-cols-2 gap-4 bg-base-200 p-4">
+                                {images.slice(0, 4).map((img, idx) => (
+                                    <motion.div
+                                        key={idx}
+                                        className="card bg-base-100 shadow-xl overflow-hidden hover:shadow-2xl transition-all"
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: idx * 0.1 }}
+                                    >
+                                        <figure className="aspect-square">
+                                            <img
+                                                src={img}
+                                                alt={`Memory ${idx + 1}`}
+                                                className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                                            />
+                                        </figure>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
 
             {/* Right Column - Content */}
             <motion.div
