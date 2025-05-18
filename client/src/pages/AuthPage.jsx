@@ -88,6 +88,7 @@ const AuthPage = () => {
           values.email,
           values.mot_de_passe
         );
+        
 
         if (result.success) {
           setSuccess("Registration successful! Please log in.");

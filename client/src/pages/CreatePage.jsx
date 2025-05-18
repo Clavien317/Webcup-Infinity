@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 import { motion } from "motion/react";
 import { Clock, AlertTriangle, Check, X, ChevronRight, ChevronLeft, Share2, Eye, CheckCircle } from "lucide-react";
+import axios from "axios";
 
 const emotions = [
     { name: "Nostalgic", emoji: "🥺", color: "text-amber-500" },
@@ -55,6 +56,8 @@ const steps = [
 ];
 
 export default function CreatePage() {
+
+    axios.defaults.baseURL = import.meta.env.VITE_API_URL;
     const [step, setStep] = useState(1);
     const [selectedEmotion, setSelectedEmotion] = useState(null);
     const [formData, setFormData] = useState({
@@ -128,11 +131,10 @@ export default function CreatePage() {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
-        // Here you would handle the form submission, like sending data to a server
         console.log("Form submitted:", formData);
-        // For demo purposes, just go to the next step
+        await axios.post("/generation/post",formData)
         nextStep();
     };
 
