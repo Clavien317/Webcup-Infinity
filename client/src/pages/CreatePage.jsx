@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Footer from "../components/Footer.jsx";
 import LoadingAnimation from '../components/LoadingAnimation';
 import Navbar from "../components/Navbar.jsx";
+import axios from "axios"
 
 const emotions = [
     { name: "Nostalgic", emoji: "🥺", color: "text-amber-500" },
@@ -89,7 +90,8 @@ const mockResponse = {
     })
 };
 
-export default function CreatePage() {
+export default function CreatePage() 
+{
 
     axios.defaults.baseURL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
@@ -656,4 +658,5 @@ export default function CreatePage() {
             <Footer />
         </>
     );
+}
 }
