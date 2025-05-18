@@ -90,8 +90,7 @@ const mockResponse = {
     })
 };
 
-export default function CreatePage() 
-{
+export default function CreatePage() {
 
     axios.defaults.baseURL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
@@ -205,13 +204,12 @@ export default function CreatePage()
                 setIsLoading(false);
             }
 
-        // Format time remaining
-        const formatTimeLeft = () => {
-            const hours = Math.floor(timeLeft / 60);
-            const minutes = timeLeft % 60;
-            return `${hours}h ${minutes}m`;
-        };
-    }
+    // Format time remaining
+    const formatTimeLeft = () => {
+        const hours = Math.floor(timeLeft / 60);
+        const minutes = timeLeft % 60;
+        return `${hours}h ${minutes}m`;
+    };
 
     return (
         <>
