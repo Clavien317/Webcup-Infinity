@@ -90,8 +90,7 @@ const mockResponse = {
     })
 };
 
-export default function CreatePage() 
-{
+export default function CreatePage() {
 
     axios.defaults.baseURL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
@@ -170,42 +169,49 @@ export default function CreatePage()
     };
 
     const handleSubmit = async (e) => {
-        const handleSubmit = async (e) => {
-            e.preventDefault();
-            console.log("Form submitted:", formData);
-            await axios.post("/generation/post", formData)
-            nextStep();
-            setIsLoading(true);
+        e.preventDefault();
+        setIsLoading(true);
 
-            try {
-                // Simulate API call with mock response
-                await new Promise(resolve => setTimeout(resolve, 2000));
+        try {
+            const cardData = {
+                title: formData.title,
+                tone: selectedEmotion.name.toLowerCase(),
+                scenario: formData.scenario,
+                message: formData.message,
+                images: [
+                    "/src/assets/2578.jpg", // Replace with actual uploaded images
+                    "/src/assets/sary1.jpg",
+                    "/src/assets/sary2.jpg",
+                ],
+                generated: {
+                    intro: `As I embark on this ${selectedEmotion.name.toLowerCase()} journey...`,
+                    body: formData.message,
+                    conclusion: "Looking forward to what lies ahead",
+                    quotes: ["Life is about the journey, not the destination"],
+                },
+                settings: {
+                    includeGifs: formData.includeGifs,
+                    includeSounds: formData.includeSounds,
+                    includeAnimations: formData.includeAnimations,
+                }
+            };
 
-                const generatedCard = {
-                    ...formData,
-                    title: mockResponse.title(formData),
-                    generated: mockResponse.content(formData),
-                    timestamp: new Date().toISOString(),
-                    expiresIn: "24 hours"
-                };
+            // Navigate to card page with the generated data
+            navigate('/card', {
+                state: { cardData }
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            setIsLoading(false);
+        }
+    };
 
-                // Navigate to card page with generated data
-                navigate('/card', {
-                    state: { cardData: generatedCard }
-                });
-            } catch (error) {
-                console.error('Error:', error);
-                setIsLoading(false);
-            }
-        };
-
-        // Format time remaining
-        const formatTimeLeft = () => {
-            const hours = Math.floor(timeLeft / 60);
-            const minutes = timeLeft % 60;
-            return `${hours}h ${minutes}m`;
-        };
-    }
+    // Format time remaining
+    const formatTimeLeft = () => {
+        const hours = Math.floor(timeLeft / 60);
+        const minutes = timeLeft % 60;
+        return `${hours}h ${minutes}m`;
+    };
 
     return (
         <>
