@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Footer from "../components/Footer.jsx";
 import LoadingAnimation from '../components/LoadingAnimation';
 import Navbar from "../components/Navbar.jsx";
+import axios from "axios";
 
 const emotions = [
     { name: "Nostalgic", emoji: "🥺", color: "text-amber-500" },
@@ -167,42 +168,43 @@ export default function CreatePage() {
         }
     };
 
-    const handleSubmit = async(e) => {
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log("Form submitted:", formData);
-        await axios.post("/generation/post",formData)
-        nextStep();
-        setIsLoading(true);
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            console.log("Form submitted:", formData);
+            await axios.post("/generation/post", formData)
+            nextStep();
+            setIsLoading(true);
 
-        try {
-            // Simulate API call with mock response
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            const generatedCard = {
-                ...formData,
-                title: mockResponse.title(formData),
-                generated: mockResponse.content(formData),
-                timestamp: new Date().toISOString(),
-                expiresIn: "24 hours"
-            };
+            try {
+                // Simulate API call with mock response
+                await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // Navigate to card page with generated data
-            navigate('/card', { 
-                state: { cardData: generatedCard }
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            setIsLoading(false);
-        }
-    };
+                const generatedCard = {
+                    ...formData,
+                    title: mockResponse.title(formData),
+                    generated: mockResponse.content(formData),
+                    timestamp: new Date().toISOString(),
+                    expiresIn: "24 hours"
+                };
 
-    // Format time remaining
-    const formatTimeLeft = () => {
-        const hours = Math.floor(timeLeft / 60);
-        const minutes = timeLeft % 60;
-        return `${hours}h ${minutes}m`;
-    };
+                // Navigate to card page with generated data
+                navigate('/card', {
+                    state: { cardData: generatedCard }
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                setIsLoading(false);
+            }
+        };
+
+        // Format time remaining
+        const formatTimeLeft = () => {
+            const hours = Math.floor(timeLeft / 60);
+            const minutes = timeLeft % 60;
+            return `${hours}h ${minutes}m`;
+        };
+    }
 
     return (
         <>
@@ -425,7 +427,7 @@ export default function CreatePage() {
                                 {/* Step 3: Preview */}
                                 {step === 3 && (
                                     <div>
-                                         <div className="flex flex-col items-center mb-8 text-center">
+                                        <div className="flex flex-col items-center mb-8 text-center">
                                             <h2 className="card-title text-2xl justify-center mb-2">Tell Your Story</h2>
                                             <p className="text-base-content/70">This is your moment to express everything you need to say</p>
                                         </div>
@@ -556,9 +558,8 @@ export default function CreatePage() {
                                             {toneOptions.map((tone) => (
                                                 <motion.div
                                                     key={tone.value}
-                                                    className={`card cursor-pointer hover:shadow-lg transition-all ${
-                                                        formData.tone === tone.value ? 'bg-primary/10 border-2 border-primary' : 'bg-base-200'
-                                                    }`}
+                                                    className={`card cursor-pointer hover:shadow-lg transition-all ${formData.tone === tone.value ? 'bg-primary/10 border-2 border-primary' : 'bg-base-200'
+                                                        }`}
                                                     onClick={() => setFormData({ ...formData, tone: tone.value })}
                                                     whileHover={{ scale: 1.02 }}
                                                     whileTap={{ scale: 0.98 }}
@@ -607,8 +608,8 @@ export default function CreatePage() {
                                                     <div className="grid grid-cols-2 gap-4 mb-4">
                                                         {formData.images.map((img, idx) => (
                                                             <div key={idx} className="relative aspect-video rounded-lg overflow-hidden">
-                                                                <img 
-                                                                    src={img} 
+                                                                <img
+                                                                    src={img}
                                                                     alt={`Preview ${idx + 1}`}
                                                                     className="w-full h-full object-cover"
                                                                 />

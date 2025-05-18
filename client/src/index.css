@@ -11,6 +11,13 @@
     --color-secondary: #33f6d0;
 }
 
+@plugin "daisyui/theme" {
+    name: "night";
+    prefersdark: false;
+    default: false;
+    --color-primary: #f6339a;
+    --color-secondary: #33f6d0;
+}
 * {
     font-family: Poppins, "sans serif";
 }

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { Moon, Sun } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,6 +50,16 @@ const Navbar = () => {
             >
               Create Page
             </Link>
+            <label className="swap swap-rotate">
+              {/* this hidden checkbox controls the state */}
+              <input type="checkbox" className="theme-controller" value="night" />
+
+              {/* sun icon */}
+              <Sun className="swap-off" />
+
+              {/* moon icon */}
+              <Moon className="swap-on" />
+            </label>
           </div>
 
           {/* Mobile menu button */}

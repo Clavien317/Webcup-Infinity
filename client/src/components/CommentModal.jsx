@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Heart, Send } from 'lucide-react';
+import { X, ArrowUp, ArrowDown, Send } from 'lucide-react';
 
 export default function CommentModal({ isOpen, onClose, pageId, comments: initialComments = [] }) {
     const [comment, setComment] = useState('');
@@ -13,25 +14,35 @@ export default function CommentModal({ isOpen, onClose, pageId, comments: initia
         const newComment = {
             id: Date.now(),
             text: comment,
-            author: "Current User", // This would come from auth context
+            author: "Current User",
             avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=user${Date.now()}`,
             createdAt: new Date().toISOString(),
-            likes: 0,
-            isLiked: false
+            votes: 0,
+            hasVoted: null // null, 'up', or 'down'
         };
 
         setComments([newComment, ...comments]);
         setComment('');
     };
 
-    const handleLike = (commentId) => {
+    const handleVote = (commentId, voteType) => {
         setComments(comments.map(c => {
             if (c.id === commentId) {
-                return {
-                    ...c,
-                    likes: c.isLiked ? c.likes - 1 : c.likes + 1,
-                    isLiked: !c.isLiked
-                };
+                const currentVote = c.hasVoted;
+                let newVotes = c.votes;
+
+                if (currentVote === voteType) {
+                    // Annuler le vote
+                    newVotes += (voteType === 'up' ? -1 : 1);
+                    return { ...c, votes: newVotes, hasVoted: null };
+                } else {
+                    // Changer ou ajouter un vote
+                    if (currentVote) {
+                        newVotes += (currentVote === 'up' ? -1 : 1);
+                    }
+                    newVotes += (voteType === 'up' ? 1 : -1);
+                    return { ...c, votes: newVotes, hasVoted: voteType };
+                }
             }
             return c;
         }));
@@ -55,19 +66,19 @@ export default function CommentModal({ isOpen, onClose, pageId, comments: initia
                         onClick={e => e.stopPropagation()}
                     >
                         <div className="p-4 border-b flex justify-between items-center">
-                            <h3 className="text-lg font-bold">Comments</h3>
+                            <h3 className="text-lg font-bold">Commentaires</h3>
                             <button className="btn btn-ghost btn-sm btn-circle" onClick={onClose}>
                                 <X size={20} />
                             </button>
                         </div>
 
                         <div className="p-4 max-h-[60vh] overflow-y-auto space-y-4">
-                            {/* Comment Form */}
+                            {/* Form */}
                             <form onSubmit={handleSubmit} className="flex gap-2">
                                 <input
                                     type="text"
                                     className="input input-bordered flex-1"
-                                    placeholder="Write a comment..."
+                                    placeholder="Ajouter un commentaire..."
                                     value={comment}
                                     onChange={(e) => setComment(e.target.value)}
                                 />
@@ -85,29 +96,37 @@ export default function CommentModal({ isOpen, onClose, pageId, comments: initia
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                     >
-                                        <div className="avatar">
-                                            <div className="w-10 h-10 rounded-full">
-                                                <img src={comment.avatar} alt={comment.author} />
-                                            </div>
+                                        <div className="flex flex-col items-center gap-1">
+                                            <button
+                                                className={`btn btn-xs btn-ghost ${comment.hasVoted === 'up' ? 'text-primary' : ''}`}
+                                                onClick={() => handleVote(comment.id, 'up')}
+                                            >
+                                                <ArrowUp size={16} />
+                                            </button>
+                                            <span className={`text-sm font-bold ${comment.votes > 0 ? 'text-primary' : comment.votes < 0 ? 'text-error' : ''}`}>
+                                                {comment.votes}
+                                            </span>
+                                            <button
+                                                className={`btn btn-xs btn-ghost ${comment.hasVoted === 'down' ? 'text-error' : ''}`}
+                                                onClick={() => handleVote(comment.id, 'down')}
+                                            >
+                                                <ArrowDown size={16} />
+                                            </button>
                                         </div>
                                         <div className="flex-1">
                                             <div className="bg-base-200 rounded-lg p-3">
-                                                <p className="font-semibold">{comment.author}</p>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <div className="avatar">
+                                                        <div className="w-6 h-6 rounded-full">
+                                                            <img src={comment.avatar} alt={comment.author} />
+                                                        </div>
+                                                    </div>
+                                                    <span className="font-semibold">{comment.author}</span>
+                                                    <span className="text-xs opacity-50">
+                                                        {new Date(comment.createdAt).toLocaleDateString()}
+                                                    </span>
+                                                </div>
                                                 <p>{comment.text}</p>
-                                            </div>
-                                            <div className="flex gap-4 mt-1 text-sm">
-                                                <button
-                                                    className={`flex items-center gap-1 hover:text-primary transition-colors ${
-                                                        comment.isLiked ? 'text-primary' : 'text-gray-500'
-                                                    }`}
-                                                    onClick={() => handleLike(comment.id)}
-                                                >
-                                                    <Heart size={14} fill={comment.isLiked ? "currentColor" : "none"} />
-                                                    {comment.likes}
-                                                </button>
-                                                <span className="text-gray-500">
-                                                    {new Date(comment.createdAt).toLocaleDateString()}
-                                                </span>
                                             </div>
                                         </div>
                                     </motion.div>
