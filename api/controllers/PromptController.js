@@ -1,5 +1,8 @@
 const Prompt = require("../models/Prompt");
 require("dotenv").config();
+const { ChatMistralAI } = require("@langchain/mistralai");
+const { PromptTemplate } = require("@langchain/core/prompts");
+const { RunnableSequence } = require("@langchain/core/runnables");
 
 const generation = async (req, res) => {
   
@@ -43,7 +46,6 @@ const generation = async (req, res) => {
     });
 
     return res.status(201).json({
-      nouveaudepart,
       idUser,
     });
 

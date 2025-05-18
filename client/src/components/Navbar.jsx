@@ -29,7 +29,7 @@ const Navbar = () => {
                 to="/examples"
                 className="px-3 py-2 rounded-md text-sm font-medium"
               >
-                Examples
+                Hall 
               </Link>
               <Link
                 to="/how-it-works"
@@ -106,7 +106,7 @@ const Navbar = () => {
               className="block px-3 py-2 rounded-md text-base font-medium"
               onClick={() => setIsOpen(false)}
             >
-              Examples
+              Hall
             </Link>
             <Link
               to="/how-it-works"
