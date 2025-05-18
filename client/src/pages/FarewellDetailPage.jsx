@@ -52,7 +52,7 @@ export default function FarewellDetailPage() {
           createdAt: data.created_at,
           votes: data.votes || 0,
           hasVoted: null,
-          comments: data.comments || [],
+          comments: data.comments || '',
           scenario: data.Prompt?.cas,
           tone: data.Prompt?.ton,
           message: data.Prompt?.message,

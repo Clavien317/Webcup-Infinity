@@ -133,7 +133,7 @@ const [hasVoted, setHasVoted] = useState(page.hasVoted || false);
           </h2>
 
           <div className="line-clamp-3 mb-4 text-sm opacity-80">
-            {truncateMessage(page.reponse, 150)}
+            {truncateMessage(page.comments, 150)}
           </div>
 
           {page.scenario && page.tone && (
