@@ -52,7 +52,7 @@ const generation = async (req, res) => {
       cas:scenario,
       ton:tone,
       message,
-      idUser: Number(idUser)||2,
+      idUser: Number(idUser),
       includegifs:includeGifs,
       background,
       image

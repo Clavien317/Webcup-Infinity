@@ -98,6 +98,13 @@ export default function CreatePage()
     const [isLoading, setIsLoading] = useState(false);
     const [step, setStep] = useState(1);
     const [selectedEmotion, setSelectedEmotion] = useState(null);
+    const [user,setUser] = useState(null)
+
+    useEffect(()=>
+    {
+        const stored = localStorage.getItem("user")
+        setUser(JSON.parse(stored))    
+    },[])
     const [formData, setFormData] = useState({
         title: "My Farewell Page",
         tone: "",
@@ -107,7 +114,8 @@ export default function CreatePage()
         backgroundMusic: null,
         includeGifs: false,
         includeSounds: false,
-        includeAnimations: false
+        includeAnimations: false,
+        idUser: user.id
     });
     const [timeLeft, setTimeLeft] = useState(1440); // 24 hours in minutes
     const [errors, setErrors] = useState({});

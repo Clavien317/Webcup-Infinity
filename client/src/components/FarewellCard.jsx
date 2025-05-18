@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { ExternalLink, MessageCircle } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CommentModal from "./CommentModal";
 
@@ -11,6 +11,7 @@ export default function FarewellCard({ page }) {
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [voteCount, setVoteCount] = useState(page.votes);
   const [hasVoted, setHasVoted] = useState(page.hasVoted);
+  const [user,setUser] = useState(null)
 
   const truncateMessage = (message, maxLength = 200) => {
     if (message.length <= maxLength) return message;
@@ -82,6 +83,12 @@ export default function FarewellCard({ page }) {
     }
   };
 
+  useEffect(()=>
+  {
+    const stored = localStorage.getItem("user")
+    setUser(JSON.parse(stored))    
+  },[])
+
   const {author, avatar, createdAt, comments, emotion, message } = page;
 
   return (
@@ -98,14 +105,14 @@ export default function FarewellCard({ page }) {
                 <img
                   src={
                     avatar ||
-                    `https://api.dicebear.com/7.x/avataaars/svg?seed=${author}`
+                    `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.nom}`
                   }
-                  alt={author}
+                  alt={user?.nom}
                 />
               </div>
             </div>
             <div>
-              <h3 className="font-bold">{author}</h3>
+              <h3 className="font-bold">{user?.nom || author}</h3>
               <p className="text-sm opacity-70">
                 {new Date(createdAt).toLocaleDateString()}
               </p>
