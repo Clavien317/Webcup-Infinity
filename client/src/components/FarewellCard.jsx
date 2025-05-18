@@ -9,8 +9,9 @@ import axios from "axios";
 export default function FarewellCard({ page }) {
   const [expanded, setExpanded] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-  const [voteCount, setVoteCount] = useState(page.votes || 0);
-  const [hasVoted, setHasVoted] = useState(page.hasVoted || false);
+  const [voteCount, setVoteCount] = useState(page.votes);
+  const [hasVoted, setHasVoted] = useState(page.hasVoted);
+  const [user, setUser] = useState(null);
 
   const truncateMessage = (message, maxLength = 200) => {
     if (!message) return "";
@@ -89,6 +90,13 @@ export default function FarewellCard({ page }) {
     }
   };
 
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    setUser(JSON.parse(stored));
+  }, []);
+
+  const { author, avatar, createdAt, comments, emotion, message } = page;
+
   return (
     <>
       <motion.div
@@ -107,7 +115,7 @@ export default function FarewellCard({ page }) {
                     page.avatar ||
                     `https://api.dicebear.com/7.x/avataaars/svg?seed=${page.author}`
                   }
-                  alt={page.author}
+                  alt={user?.nom}
                 />
               </div>
             </div>

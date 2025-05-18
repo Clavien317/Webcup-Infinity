@@ -6,7 +6,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [token, setToken] = useState(localStorage.getItem("token-infinity") || null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
       setUser(utilisateur);
 
       // Save to localStorage
-      localStorage.setItem("token", token);
+      localStorage.setItem("token-infinity", token);
       localStorage.setItem("user", JSON.stringify(utilisateur));
 
       setLoading(false);
