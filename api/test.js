@@ -3,15 +3,20 @@ require("dotenv").config();
 const { PromptTemplate } = require("@langchain/core/prompts");
 const { RunnableSequence } = require("@langchain/core/runnables");
 
-const prompt =
-  PromptTemplate.fromTemplate(`devine la langue et donne le reponse  en JSON.
-
-phrase : {phrase}
-
-Réponse (au format JSON, sans texte autour) :
-{{
-  "language": "string"
-}}`);
+const prompt = PromptTemplate.fromTemplate(`
+    Tu es un expert en communication émotionnelle.
+    
+    Ta tâche est de rédiger un message clair, direct et percutant dont l’objectif est de mettre fin à une situation, une relation ou un engagement.
+    
+    - Utilise un ton très {ton}.
+    - Prends en compte le contexte suivant de l'utilisateur a envoyé : {cas}
+    - Intègre subtilement le point de vue de l’utilisateur exprimé ici (si il y'en a) : {message}
+    - La réponse doit être uniquement le message généré, sans aucun mot ou caractère supplémentaire avant ou après, ni aucune variable.
+    
+    Ne retourne que le texte final, sans cadre ni explication.
+    enleve les: Chère [Nom], [Votre Nom]
+    
+  `);
 
 // Formater le prompt avec une valeur
 
@@ -24,7 +29,12 @@ const chat = new ChatMistralAI({
 const chain = RunnableSequence.from([prompt, chat]);
 
 async function run() {
-  const res = await chain.invoke({ phrase: "hola" });
+  const res = await chain.invoke({
+    ton: "Nostalgique",
+    cas: "J'ai rompu avec mon ex",
+    message:
+      "Je suis heureux de ne plus être avec lui et je veux trouver une autre personne",
+  });
   console.log(res);
 }
 

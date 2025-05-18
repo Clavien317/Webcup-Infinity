@@ -8,20 +8,41 @@ const generation = async (req, res) => {
   const { reaction, cas, ton, message, nouveaudepart, idUser } = req.body;
 
   // Vérification de tous les champs obligatoires (ajout message)
-  if (!reaction || !cas || !ton || !message || !nouveaudepart || !idUser) {
-    return res.status(400).json({ message: "Veuillez remplir tous les champs obligatoires." });
+  if (!reaction || !cas || !ton || !message || !idUser) {
+    return res
+      .status(400)
+      .json({ message: "Veuillez remplir tous les champs obligatoires." });
   }
 
-    const prompts = PromptTemplate.fromTemplate(`devine la langue et donne la réponse en JSON.
-    phrase : {phrase}
-    Réponse (au format JSON, sans texte autour) :
-    {
-    "language": "string"
-    }`);
+  const prompts = PromptTemplate.fromTemplate(`
+    Tu es un expert en communication émotionnelle.
+    
+    Ta tâche est de rédiger un message clair, direct et percutant dont l’objectif est de mettre fin à une situation, une relation ou un engagement.
+    
+    - Utilise un ton très {ton}.
+    - Prends en compte le contexte suivant de l'utilisateur a envoyé : {cas}
+    - Intègre subtilement le point de vue de l’utilisateur exprimé ici (si il y'en a) : {message}
+    - La réponse doit être uniquement le message généré, sans aucun mot ou caractère supplémentaire avant ou après, ni aucune variable.
+    
+    Ne retourne que le texte final, sans cadre ni explication.
+    enleve les: Chère [Nom], [Votre Nom]
+    `);
+
+  // Réponse (au format JSON, sans texte autour) :
+  // {
+  //   "language": "string"
+  // }
 
   try {
     // Création en base
-    const prompt = await Prompt.create({ reaction, cas, ton, message, nouveaudepart, idUser });
+    const prompt = await Prompt.create({
+      reaction,
+      cas,
+      ton,
+      message,
+      nouveaudepart,
+      idUser,
+    });
 
     // Configuration de l'IA
     const chat = new ChatMistralAI({
@@ -52,34 +73,34 @@ const generation = async (req, res) => {
 };
 
 const modifiGeneration = async (req, res) => {
-    const { id } = req.params;
-    const { reaction, cas, ton, message, nouveaudepart, idUser } = req.body;
+  const { id } = req.params;
+  const { reaction, cas, ton, message, nouveaudepart, idUser } = req.body;
 
-    try {
-        const prompt = await Prompt.findByPk(id);
-        if (!prompt) {
-            return res.status(404).json({ message: "Prompt non trouvé." });
-        }
-
-        prompt.reaction = reaction || prompt.reaction;
-        prompt.cas = cas || prompt.cas;
-        prompt.ton = ton || prompt.ton;
-        prompt.message = message || prompt.message;
-        prompt.nouveaudepart = nouveaudepart || prompt.nouveaudepart;
-        prompt.idUser = idUser || prompt.idUser;
-
-        await prompt.save();
-
-        res.json({ message: "Prompt modifié avec succès", prompt });
-    } catch (error) {
-        console.error("Erreur de modification :", error);
-        res.status(500).json({ message: "Erreur lors de la modification du prompt." });
+  try {
+    const prompt = await Prompt.findByPk(id);
+    if (!prompt) {
+      return res.status(404).json({ message: "Prompt non trouvé." });
     }
-};
 
+    prompt.reaction = reaction || prompt.reaction;
+    prompt.cas = cas || prompt.cas;
+    prompt.ton = ton || prompt.ton;
+    prompt.message = message || prompt.message;
+    prompt.nouveaudepart = nouveaudepart || prompt.nouveaudepart;
+    prompt.idUser = idUser || prompt.idUser;
+
+    await prompt.save();
+
+    res.json({ message: "Prompt modifié avec succès", prompt });
+  } catch (error) {
+    console.error("Erreur de modification :", error);
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la modification du prompt." });
+  }
+};
 
 module.exports = {
-    generation,
-    modifiGeneration
+  generation,
+  modifiGeneration,
 };
-
