@@ -90,7 +90,8 @@ const mockResponse = {
     })
 };
 
-export default function CreatePage() {
+export default function CreatePage() 
+{
 
     axios.defaults.baseURL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
