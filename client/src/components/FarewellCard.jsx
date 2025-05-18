@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { ExternalLink, MessageCircle, ThumbsUp } from "lucide-react";
+import { ExternalLink, MessageCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -9,9 +9,8 @@ import axios from "axios";
 export default function FarewellCard({ page }) {
   const [expanded, setExpanded] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-  const [voteCount, setVoteCount] = useState(page.votes);
-  const [hasVoted, setHasVoted] = useState(page.hasVoted);
-  const [user, setUser] = useState(null);
+  const [voteCount, setVoteCount] = useState(page.votes || 0);
+  const [hasVoted, setHasVoted] = useState(page.hasVoted || false);
 
   const truncateMessage = (message, maxLength = 200) => {
     if (!message) return "";
@@ -90,13 +89,6 @@ export default function FarewellCard({ page }) {
     }
   };
 
-  useEffect(() => {
-    const stored = localStorage.getItem("user");
-    setUser(JSON.parse(stored));
-  }, []);
-
-  const { author, avatar, createdAt, comments, emotion, message } = page;
-
   return (
     <>
       <motion.div
@@ -115,7 +107,7 @@ export default function FarewellCard({ page }) {
                     page.avatar ||
                     `https://api.dicebear.com/7.x/avataaars/svg?seed=${page.author}`
                   }
-                  alt={user?.nom}
+                  alt={page.author}
                 />
               </div>
             </div>
@@ -160,12 +152,13 @@ export default function FarewellCard({ page }) {
             <div className="flex items-center gap-4">
               <button
                 className={`btn btn-sm ${
-                  hasVoted ? "btn-primary" : "btn-ghost"
-                }`}
+                  hasVoted
+                    ? "bg-pink-500 text-white hover:bg-pink-600"
+                    : "bg-white text-gray-800 hover:bg-gray-100"
+                } transition-colors`}
                 onClick={handleVote}
               >
-                <ThumbsUp size={16} />
-                {voteCount > 0 && voteCount}
+                Vote {voteCount > 0 && `(${voteCount})`}
               </button>
               <button
                 className="btn btn-sm btn-ghost gap-2"
