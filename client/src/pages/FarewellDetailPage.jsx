@@ -97,7 +97,7 @@ export default function FarewellDetailPage() {
       <div className="min-h-screen pt-20 pb-10 bg-base-200">
         <div className="container mx-auto px-4">
           <div className="mb-6">
-            <a href="/hall-of-fame" className="btn btn-ghost gap-2">
+            <a href="/examples" className="btn btn-ghost gap-2">
               <ArrowLeft className="w-4 h-4" />
               Back to Hall of Fame
             </a>

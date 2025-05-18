@@ -2,6 +2,7 @@
 import { ExternalLink, MessageCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import CommentModal from "./CommentModal";
 
 export default function FarewellCard({ page }) {
@@ -112,6 +113,9 @@ export default function FarewellCard({ page }) {
           </div>
 
           <h2 className="card-title mb-2">
+            <Link to={`/farewell/${page.id}`} className="hover:underline">
+              {title}
+            </Link>
             {message}
             <div className="badge badge-neutral">{emotion.name}</div>
           </h2>
@@ -149,9 +153,12 @@ export default function FarewellCard({ page }) {
                 {page.comments?.length || 0}
               </button>
             </div>
-            <button className="btn btn-primary btn-link text-primary">
-              <ExternalLink/>
-            </button>
+            <Link
+              to={`/farewell/${page.id}`}
+              className="btn btn-primary btn-link text-primary"
+            >
+              <ExternalLink />
+            </Link>
           </div>
         </div>
       </motion.div>
