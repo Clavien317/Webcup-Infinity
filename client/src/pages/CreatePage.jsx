@@ -203,14 +203,14 @@ export default function CreatePage() {
                 console.error('Error:', error);
                 setIsLoading(false);
             }
-
+}
     // Format time remaining
     const formatTimeLeft = () => {
         const hours = Math.floor(timeLeft / 60);
         const minutes = timeLeft % 60;
         return `${hours}h ${minutes}m`;
     };
-
+    
     return (
         <>
             {isLoading && <LoadingAnimation />}
