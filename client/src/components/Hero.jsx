@@ -6,8 +6,9 @@ import { BackgroundBeams } from "../ui/BackgroundBeams";
 import SplashScreen from "./SplashScreen";
 import { useEffect, useState } from "react";
 const Hero = () => {
-  const navigate = useNavigate();
   const [showSplash, setShowSplash] = useState(true);
+  const [login,setLogin] = useState(false)
+  const navigate = useNavigate()
 
   // Vérifier si c'est la première visite
   // Vérifier si c'est la première visite
@@ -24,6 +25,19 @@ const Hero = () => {
     // localStorage.removeItem("hasVisitedBefore");
   }, []);
 
+    const auth=()=>
+    {
+      const token  = localStorage.getItem("token-infinity")
+
+      if(!token)
+      {
+        navigate("/auth")
+      }else
+      {
+        navigate('/create')
+      }
+    }
+
   const handleSplashComplete = () => {
     setShowSplash(false);
   };
@@ -31,6 +45,8 @@ const Hero = () => {
   if (showSplash) {
     return <SplashScreen onComplete={handleSplashComplete} />;
   }
+
+
   return (
     <div className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden">
       {/* Animated Background Gradient */}
@@ -142,7 +158,7 @@ const Hero = () => {
           transition={{ delay: 0.6, duration: 0.8 }}
         >
           <motion.button
-            onClick={() => navigate("/create")}
+            onClick={() => auth()}
             className="btn btn-primary btn-lg px-8 rounded-full shadow-lg shadow-primary/20"
             whileHover={{
               scale: 1.05,

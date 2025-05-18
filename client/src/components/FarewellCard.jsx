@@ -7,10 +7,11 @@ import CommentModal from "./CommentModal";
 import axios from "axios";
 
 export default function FarewellCard({ page }) {
+  axios.defaults.baseURL = import.meta.env.VITE_API_URL;
   const [expanded, setExpanded] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-  const [voteCount, setVoteCount] = useState(page.votes || 0);
-  const [hasVoted, setHasVoted] = useState(page.hasVoted || false);
+const [voteCount, setVoteCount] = useState(0);
+const [hasVoted, setHasVoted] = useState(page.hasVoted || false);
 
   const truncateMessage = (message, maxLength = 200) => {
     if (!message) return "";
@@ -71,23 +72,21 @@ export default function FarewellCard({ page }) {
     return tones[toneValue] || toneValue;
   };
 
-  const handleVote = async () => {
-    try {
-      if (hasVoted) {
-        // Annuler le vote
-        await axios.post(`/votes/${page.id}/remove`);
-        setVoteCount((prev) => prev - 1);
-        setHasVoted(false);
-      } else {
-        // Ajouter un vote
-        await axios.post(`/votes/${page.id}/add`);
-        setVoteCount((prev) => prev + 1);
-        setHasVoted(true);
-      }
-    } catch (error) {
-      console.error("Error voting:", error);
-    }
-  };
+// const handleVote = async () => {
+//   try {
+//     if (hasVoted) {
+//       await axios.post(`/votes`);
+//       setVoteCount((c) => c - 1);
+//       setHasVoted(false);
+//     } else {
+//       await axios.post(`/votes`);
+//       setVoteCount((c) => c + 1);
+//       setHasVoted(true);
+//     }
+//   } catch (err) {
+//     console.error("Error voting:", err);
+//   }
+// };
 
   return (
     <>
@@ -156,9 +155,9 @@ export default function FarewellCard({ page }) {
                     ? "bg-pink-500 text-white hover:bg-pink-600"
                     : "bg-white text-gray-800 hover:bg-gray-100"
                 } transition-colors`}
-                onClick={handleVote}
+                onClick={()=>setVoteCount(voteCount+1)}
               >
-                Vote {voteCount > 0 && `(${voteCount})`}
+               {voteCount?(<><p className="text-xl text-pink-600">{voteCount}</p> Voting</>):"Voting" }
               </button>
               <button
                 className="btn btn-sm btn-ghost gap-2"
