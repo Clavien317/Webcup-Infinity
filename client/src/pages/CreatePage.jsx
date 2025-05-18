@@ -1,9 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
-import Navbar from "../components/Navbar.jsx";
-import Footer from "../components/Footer.jsx";
+import { AlertTriangle, Check, CheckCircle, ChevronLeft, ChevronRight, Eye } from "lucide-react";
 import { motion } from "motion/react";
-import { Clock, AlertTriangle, Check, X, ChevronRight, ChevronLeft, Share2, Eye, CheckCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import Footer from "../components/Footer.jsx";
+import LoadingAnimation from '../components/LoadingAnimation';
+import Navbar from "../components/Navbar.jsx";
 
 const emotions = [
     { name: "Nostalgic", emoji: "🥺", color: "text-amber-500" },
@@ -54,7 +56,42 @@ const steps = [
     }
 ];
 
+const mockResponse = {
+    title: formData => `Farewell to ${formData.title}`,
+    content: formData => ({
+        intro: `As I sit here reflecting on this ${formData.tone} moment, my heart is filled with ${formData.scenario.includes('heartbreak') ? 'bittersweet memories' : 'mixed emotions'}.`,
+        body: formData.message || "Time has a way of bringing change into our lives, sometimes expected, sometimes not. But each ending is also a new beginning.",
+        conclusion: "And so, with both gratitude and courage, I say goodbye.",
+        generatedImages: [
+            "https://source.unsplash.com/random/800x600/?farewell",
+            "https://source.unsplash.com/random/800x600/?memories",
+            "https://source.unsplash.com/random/800x600/?hope"
+        ],
+        soundtrack: {
+            title: "Farewell Symphony",
+            url: "https://example.com/music/farewell.mp3"
+        },
+        theme: {
+            primary: "#4A90E2",
+            secondary: "#F5A623",
+            background: "gradient-to-r from-blue-500/10 to-purple-500/10"
+        },
+        animations: [
+            { type: "fade-in", duration: 1000 },
+            { type: "float", duration: 2000 },
+            { type: "pulse", duration: 1500 }
+        ],
+        quotes: [
+            "Every new beginning comes from some other beginning's end.",
+            "The hardest part isn't letting go but learning to start over.",
+            "Sometimes goodbye is a second chance."
+        ]
+    })
+};
+
 export default function CreatePage() {
+    const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
     const [step, setStep] = useState(1);
     const [selectedEmotion, setSelectedEmotion] = useState(null);
     const [formData, setFormData] = useState({
@@ -128,12 +165,30 @@ export default function CreatePage() {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Here you would handle the form submission, like sending data to a server
-        console.log("Form submitted:", formData);
-        // For demo purposes, just go to the next step
-        nextStep();
+        setIsLoading(true);
+
+        try {
+            // Simulate API call with mock response
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            const generatedCard = {
+                ...formData,
+                title: mockResponse.title(formData),
+                generated: mockResponse.content(formData),
+                timestamp: new Date().toISOString(),
+                expiresIn: "24 hours"
+            };
+
+            // Navigate to card page with generated data
+            navigate('/card', { 
+                state: { cardData: generatedCard }
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            setIsLoading(false);
+        }
     };
 
     // Format time remaining
@@ -145,6 +200,7 @@ export default function CreatePage() {
 
     return (
         <>
+            {isLoading && <LoadingAnimation />}
             <Navbar />
             <div className="min-h-screen pt-20 pb-10 bg-base-200">
                 <div className="container mx-auto px-4">
@@ -542,6 +598,18 @@ export default function CreatePage() {
                                             <div className="card bg-base-200">
                                                 <div className="card-body">
                                                     <h3 className="card-title text-lg">Enhanced Features</h3>
+                                                    <div className="grid grid-cols-2 gap-4 mb-4">
+                                                        {formData.images.map((img, idx) => (
+                                                            <div key={idx} className="relative aspect-video rounded-lg overflow-hidden">
+                                                                <img 
+                                                                    src={img} 
+                                                                    alt={`Preview ${idx + 1}`}
+                                                                    className="w-full h-full object-cover"
+                                                                />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    <div className="divider my-2"></div>
                                                     <ul className="space-y-2 text-sm">
                                                         <li className="flex items-center gap-2">
                                                             <Check className={`w-4 h-4 ${formData.includeGifs ? 'text-primary' : 'opacity-30'}`} />

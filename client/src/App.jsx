@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import LoadingScreen from "./components/LoadingScreen";
 import CreatePage from "./pages/CreatePage";
+import CardPage from "./pages/CardPage";
 // Commentez cette ligne si HowItWorks est un composant et non une page
 // import HowItWorks from "./pages/HowItWorks";
 import ExamplesPage from "./pages/ExamplesPage";
@@ -41,6 +42,8 @@ export default function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/create" element={<CreatePage />} />
                 <Route path="/examples" element={<ExamplesPage />} />
+                <Route path="/card/:id" element={<CardPage />} />
+                <Route path="/card" element={<CardPage />} />
                 {/* <Route path="/how-it-works" element={<HowItWorks />} /> */}
               </Routes>
             </Suspense>
