@@ -136,7 +136,7 @@ const Hero = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
           >
-            <span>See Examples</span>
+            <span>See Hall</span>
             <ArrowRight className="h-4 w-4 ml-2 transition-transform group-hover:translate-x-1" />
           </motion.button>
         </motion.div>
