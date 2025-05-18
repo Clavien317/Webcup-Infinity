@@ -90,6 +90,8 @@ const mockResponse = {
 };
 
 export default function CreatePage() {
+
+    axios.defaults.baseURL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [step, setStep] = useState(1);
@@ -165,8 +167,12 @@ export default function CreatePage() {
         }
     };
 
+    const handleSubmit = async(e) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("Form submitted:", formData);
+        await axios.post("/generation/post",formData)
+        nextStep();
         setIsLoading(true);
 
         try {

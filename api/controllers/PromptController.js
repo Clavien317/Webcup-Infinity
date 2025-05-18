@@ -2,10 +2,14 @@ const Prompt = require("../models/Prompt");
 require("dotenv").config();
 
 const generation = async (req, res) => {
-  const { reaction, cas, ton, message, idUser } = req.body;
+  
+  const { title, scenario, tone, message, idUser, includeGifs } = req.body|| {};
+  
+  const background = req.files?.background?.[0]?.filename ?? null;
+  const image      = req.files?.image?.[0]?.filename      ?? null;
 
   // Vérification de tous les champs obligatoires (ajout message)
-  if (!reaction || !cas || !ton || !message || !idUser) {
+  if (!scenario || !tone || !message) {
     return res
       .status(400)
       .json({ message: "Veuillez remplir tous les champs obligatoires." });
@@ -28,10 +32,17 @@ const generation = async (req, res) => {
   try {
     // Création en base
     const prompt = await Prompt.create({
-      reaction,
-      cas,
-      ton,
+      reaction:title,
+      cas:scenario,
+      ton:tone,
       message,
+      idUser: Number(idUser)||2,
+      includegifs:includeGifs,
+      background,
+      image
+    });
+
+    return res.status(201).json({
       nouveaudepart,
       idUser,
     });
