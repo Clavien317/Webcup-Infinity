@@ -103,7 +103,7 @@ export default function CardPage() {
                             </div>
 
                             {/* Images Grid */}
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-4 bg-base-200 p-4">
                                 {images.slice(0, 4).map((img, idx) => (
                                     <motion.div
                                         key={idx}
