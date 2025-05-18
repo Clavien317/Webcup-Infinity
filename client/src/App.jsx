@@ -7,7 +7,11 @@ import CardPage from "./pages/CardPage";
 // Commentez cette ligne si HowItWorks est un composant et non une page
 // import HowItWorks from "./pages/HowItWorks";
 import ExamplesPage from "./pages/ExamplesPage";
-import { ThemeProvider } from "./context/ThemeContext"; // Importez ThemeProvider
+import { ThemeProvider } from "./context/ThemeContext";
+import AuthPage from "./pages/AuthPage";
+// Utilisons React.lazy pour le chargement différé des pages moins critiques
+const HallOfFame = React.lazy(() => import("./pages/HallOfFamePage"));
+const FarewellDetail = React.lazy(() => import("./pages/FarewellDetailPage"));
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +29,7 @@ export default function App() {
 
   return (
     <>
-      {/* <LoadingScreen onLoadingComplete={() => setIsLoading(false)} /> */}
+      {isLoading && <LoadingScreen />}
 
       <div
         className={
@@ -34,10 +38,15 @@ export default function App() {
             : "opacity-100 transition-opacity duration-500"
         }
       >
-        {/* Enveloppez votre Router avec ThemeProvider */}
         <ThemeProvider>
           <Router>
-            <Suspense fallback={<div>Chargement...</div>}>
+            <Suspense
+              fallback={
+                <div className="flex justify-center items-center min-h-screen">
+                  <span className="loading loading-spinner loading-lg text-primary"></span>
+                </div>
+              }
+            >
               <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/create" element={<CreatePage />} />
