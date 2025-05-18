@@ -37,7 +37,6 @@ const Hero = () => {
               : "bg-gradient-to-b from-blue-100 via-indigo-50 to-purple-100"
           } z-0`}
         ></div>
-
         <Canvas ref={canvasRef} dpr={[1, 2]} shadows>
           <Suspense fallback={null}>
             <Sky3D scrollY={scrollY} />
@@ -67,33 +66,82 @@ const Hero = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
+        ></motion.div>
+
+        {/* Images à gauche */}
+        <motion.div
+          className="absolute left-4 top-1/4 md:left-10 lg:left-[-130px] flex flex-col gap-6 z-10"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-500">
-            TheEnd.page
-          </div>
-          <div className="flex gap-6">
-            <span
-              className={`cursor-pointer ${
-                isDark ? "text-white/80" : "text-gray-700"
-              }`}
-            >
-              Features
-            </span>
-            <span
-              className={`cursor-pointer ${
-                isDark ? "text-white/80" : "text-gray-700"
-              }`}
-            >
-              About
-            </span>
-            <span
-              className={`cursor-pointer ${
-                isDark ? "text-white/80" : "text-gray-700"
-              }`}
-            >
-              Pricing
-            </span>
-          </div>
+          <motion.div
+            className="w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-white/30 shadow-lg"
+            whileHover={{ scale: 1.05, rotate: 5 }}
+          >
+            <img
+              src="/image1.png"
+              alt="Decorative"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://via.placeholder.com/50";
+              }}
+            />
+          </motion.div>
+
+          <motion.div
+            className="w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-white/30 shadow-lg ml-6 md:ml-12"
+            whileHover={{ scale: 1.05, rotate: -5 }}
+          >
+            <img
+              src="/image2.png"
+              alt="Decorative"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://via.placeholder.com/50";
+              }}
+            />
+          </motion.div>
+        </motion.div>
+
+        {/* Images à droite */}
+        <motion.div
+          className="absolute right-4 top-1/3 md:right-10 lg:right-[-160px] flex flex-col gap-6 z-10"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+        >
+          <motion.div
+            className="w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-white/30 shadow-lg"
+            whileHover={{ scale: 1.05, rotate: -5 }}
+          >
+            <img
+              src="/image3.png"
+              alt="Decorative"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://via.placeholder.com/50";
+              }}
+            />
+          </motion.div>
+
+          <motion.div
+            className="w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-white/30 shadow-lg ml-6 md:ml-12"
+            whileHover={{ scale: 1.05, rotate: 5 }}
+          >
+            <img
+              src="/image4.png"
+              alt="Decorative"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://via.placeholder.com/50";
+              }}
+            />
+          </motion.div>
         </motion.div>
 
         {/* Glow Orbs */}
@@ -152,7 +200,7 @@ const Hero = () => {
           </motion.h1>
           <motion.h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-none mt-2">
             <span className={isDark ? "text-white/90" : "text-gray-800"}>
-              The art of letting go, with style.
+              The art of letting go, with positive mind.
             </span>
           </motion.h1>
 
@@ -235,104 +283,52 @@ const Hero = () => {
           </motion.button>
         </motion.div>
 
-        {/* Floating Avatars */}
-        <div className="relative mt-32 w-full h-64">
-          <motion.div
-            className="absolute top-0 right-1/4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
-          >
-            <div className="flex">
-              <div className="h-10 w-10 rounded-full bg-white shadow-md overflow-hidden border-2 border-white">
-                <img
-                  src="/api/placeholder/100/100"
-                  alt="placeholder"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div
-                className={`ml-2 px-4 py-2 rounded-lg max-w-xs ${
-                  isDark
-                    ? "bg-white/10 backdrop-blur-sm"
-                    : "bg-white/80 backdrop-blur-sm"
-                } shadow-sm`}
-              >
-                <p
-                  className={`text-sm ${
-                    isDark ? "text-white/80" : "text-gray-700"
-                  }`}
-                >
-                  Best decision I ever made!
-                </p>
-              </div>
+        {/* User Avatars Circle */}
+        <motion.div
+          className="absolute bottom-8 left-0 right-0 flex justify-center z-10"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9, duration: 0.8 }}
+        >
+          {/* Les 4 photos fournies arrangées en cercle */}
+          <div className="flex space-x-[-10px]">
+            <div className="w-12 h-12 rounded-full border-2 border-pink-500 overflow-hidden">
+              <img
+                src="/tar.png"
+                alt="User"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/api/placeholder/50/50";
+                }}
+              />
             </div>
-          </motion.div>
-
-          <motion.div
-            className="absolute top-12 left-1/4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.4, duration: 0.8 }}
-          >
-            <div className="flex">
-              <div className="h-10 w-10 rounded-full bg-white shadow-md overflow-hidden border-2 border-white">
-                <img
-                  src="/api/placeholder/100/100"
-                  alt="placeholder"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div
-                className={`ml-2 px-4 py-2 rounded-lg max-w-xs ${
-                  isDark
-                    ? "bg-white/10 backdrop-blur-sm"
-                    : "bg-white/80 backdrop-blur-sm"
-                } shadow-sm`}
-              >
-                <p
-                  className={`text-sm ${
-                    isDark ? "text-white/80" : "text-gray-700"
-                  }`}
-                >
-                  Finally closed that chapter!
-                </p>
-              </div>
+            <div className="w-12 h-12 rounded-full border-2 border-pink-500 overflow-hidden">
+              <img
+                src="/api/placeholder/50/50"
+                alt="User"
+                className="w-full h-full object-cover"
+              />
             </div>
-          </motion.div>
-
-          <motion.div
-            className="absolute bottom-0 right-1/3"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.6, duration: 0.8 }}
-          >
-            <div className="flex">
-              <div className="h-10 w-10 rounded-full bg-white shadow-md overflow-hidden border-2 border-white">
-                <img
-                  src="/api/placeholder/100/100"
-                  alt="placeholder"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div
-                className={`ml-2 px-4 py-2 rounded-lg max-w-xs ${
-                  isDark
-                    ? "bg-white/10 backdrop-blur-sm"
-                    : "bg-white/80 backdrop-blur-sm"
-                } shadow-sm`}
-              >
-                <p
-                  className={`text-sm ${
-                    isDark ? "text-white/80" : "text-gray-700"
-                  }`}
-                >
-                  So liberating! Highly recommend.
-                </p>
-              </div>
+            <div className="w-12 h-12 rounded-full border-2 border-pink-500 overflow-hidden">
+              <img
+                src="/api/placeholder/50/50"
+                alt="User"
+                className="w-full h-full object-cover"
+              />
             </div>
-          </motion.div>
-        </div>
+            <div className="w-12 h-12 rounded-full border-2 border-pink-500 overflow-hidden">
+              <img
+                src="/api/placeholder/50/50"
+                alt="User"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold border-2 border-pink-500">
+              100+
+            </div>
+          </div>
+        </motion.div>
       </div>
 
       {/* Subtle subtle particle effect */}
